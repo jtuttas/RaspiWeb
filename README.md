@@ -1,5 +1,4 @@
 # RaspiWeb
-<h1>RaspiWeb</h1>
 Switch an LED on or off, dim a LED and read an themperature Sensor of a Raspberry PI via Web interface
 <hr>
 <h2>Technologie usedy</h2>
