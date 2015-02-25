@@ -16,6 +16,7 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class RaspiBean {
 
+    
     int ledState;
     int ledGlow;
     int temp;
@@ -24,10 +25,10 @@ public class RaspiBean {
     public void setLedState(int ledState) {
         System.out.println ("Set LED State="+ledState);
         if (ledState==1) {
-            ledControl.turnOn(true);
+            if (ledControl!=null) ledControl.turnOn(true);
         }
         else {
-            ledControl.turnOn(false);
+            if (ledControl!=null) ledControl.turnOn(false);
         }
         this.ledState = ledState;
     }
@@ -40,7 +41,7 @@ public class RaspiBean {
     public void setLedGlow(int ledGlow) {
         System.out.println ("Set LED Glow to "+ledGlow+" %");
         this.ledGlow = ledGlow;
-        ledControl.dim(ledGlow);
+        if (ledControl!=null) ledControl.dim(ledGlow);
     }
 
     public int getLedGlow() {

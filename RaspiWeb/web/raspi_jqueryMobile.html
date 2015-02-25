@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-    
+
     <head>
-	<meta charset="utf-8">
+        <meta charset="utf-8"/>
         <title>Raspbery Pi</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-	<script src="js/service.js"></script>
-<link rel="stylesheet" href="./css/custom.css" />
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script src="js/service.js"></script>
+        <link rel="stylesheet" href="./css/custom.css" />
+        <script src="js/service.js"></script>
+        <link rel="stylesheet" href="./css/custom.css" />
+
     </head>
-    
+
     <body>
         <div data-role="page" id="page1">
             <div data-role="header">
@@ -20,7 +23,7 @@
             </div>
             <div data-role="content">
                 <img src="images/rpi.jpg" style="display: block; margin: 0 auto"
-                />
+                     />
             </div>
             <div data-role="footer" data-position="fixed" data-theme="a">
                 <a data-transition="flip" data-direction="reverse"  data-icon="info" data-theme="b" href="#page5">Lerninhalte</a>
@@ -34,12 +37,12 @@
                 <a data-transition="slide"   data-icon="arrow-r" class="ui-btn-right" data-iconpos="right" href="#page3">Weiter</a>
             </div>
             <div data-role="content">
-			<div class="toggle">
-                <select data-role="slider" >
-                    <option value="off">Off</option>
-                    <option value="on">On</option>
-                </select>
-				</div>
+                <div class="toggle">
+                    <select data-role="slider" id="toggle" >
+                        <option value="0">Off</option>
+                        <option value="100">On</option>
+                    </select>
+                </div>
             </div>
             <div data-role="footer" data-position="fixed" data-theme="a">
                 <a  data-transition="flip" data-direction="reverse"  data-icon="info" data-theme="b" href="#page6">Lerninhalte</a>
@@ -53,15 +56,15 @@
                 <a data-transition="slide"  data-icon="arrow-r" class="ui-btn-right" data-iconpos="right" href="#page4">Weiter</a>
             </div>
             <div data-role="content">
-                <div data-role="fieldcontain" id="slider1">
-                    <input type="range" id="slider1-range" value="50" min="0" max="100" step="1"
-                    />
+                <div data-role="fieldcontain" id="fieldslider1">
+                    <input type="range" id="slider1" value="50" min="0" max="100" step="1"
+                           />
                 </div>
             </div>
             <div data-role="footer" data-position="fixed" data-theme="a">
-			 <a  data-transition="flip" data-direction="reverse"  data-icon="info" data-theme="b" href="#page7">Lerninhalte</a>
+                <a  data-transition="flip" data-direction="reverse"  data-icon="info" data-theme="b" href="#page7">Lerninhalte</a>
                 <h1>(c) 2015 by Dr. Jörg Tuttas</h1>
-             
+
             </div>
         </div>
         <div data-role="page" id="page4">
@@ -70,13 +73,13 @@
                 <h1>Thermometer</h1>
             </div>
             <div data-role="content">
-				<h1>Temperatur 24°C</h1>
+                <h1>Temperatur 24°C</h1>
                 <div data-role="fieldcontain" id="slider2">
-                   
+
                 </div>
             </div>
             <div data-role="footer" data-position="fixed" data-theme="a">
-			 <a  data-transition="flip" data-direction="reverse"  data-icon="info" data-theme="b" href="#page8">Lerninhalte</a>
+                <a  data-transition="flip" data-direction="reverse"  data-icon="info" data-theme="b" href="#page8">Lerninhalte</a>
                 <h1>(c) 2015 by Dr. Jörg Tuttas</h1>
             </div>
         </div>
@@ -85,21 +88,21 @@
                 <h1>Lerninhalte 1</h1>
             </div>
             <div data-role="content">
-				<h2>LF4</h2>
-				<ul>
-					<li>elektrische Leistung</li>
-					<li>von Neumann Architektur</li>
-					<li>Betriebssysteme einrichten (Linux)</li>
+                <h2>LF4</h2>
+                <ul>
+                    <li>elektrische Leistung</li>
+                    <li>von Neumann Architektur</li>
+                    <li>Betriebssysteme einrichten (Linux)</li>
 
-				</ul>
-				<h2>LF6</h2>
-				<ul>
-					<li>Webserver u. Applicationserver</li>
-					<li>Datenbank einrichten</li>
-					<li>Pakete und Paketmanager(Linux)</li>
+                </ul>
+                <h2>LF6</h2>
+                <ul>
+                    <li>Webserver u. Applicationserver</li>
+                    <li>Datenbank einrichten</li>
+                    <li>Pakete und Paketmanager(Linux)</li>
 
-				</ul>
-			</div>
+                </ul>
+            </div>
             <div data-role="footer" data-position="fixed" data-theme="a">
                 <a  data-transition="flip" data-direction="reverse"  data-theme="b" data-icon="back"  data-iconpos="right" href="#page1">Zurück</a>
                 <h1>(c) 2015 by Dr. Jörg Tuttas</h1>
@@ -110,24 +113,24 @@
                 <h1>Lerninhalte 2</h1>
             </div>
             <div data-role="content">
-				<h2>LF4</h2>
-				<ul>
-					<li>Ohmsches Gesetz</li>
-					<li>Halbleiter (LED)</li>
-					<li>Reihenschaltung mit nichtliniearen Bauelementen</li>
+                <h2>LF4</h2>
+                <ul>
+                    <li>Ohmsches Gesetz</li>
+                    <li>Halbleiter (LED)</li>
+                    <li>Reihenschaltung mit nichtliniearen Bauelementen</li>
 
-				</ul>
-				<h2>LF6</h2>
-				<ul>
-					<li>HTML,CSS</li>
-					<li>Zahlensysteme</li>
-					<li>Client u. Server</li>
-					<li>Java (J2EE), Beans, JSF</li>
-					<li>IO Port Programmierung</li>
+                </ul>
+                <h2>LF6</h2>
+                <ul>
+                    <li>HTML,CSS</li>
+                    <li>Zahlensysteme</li>
+                    <li>Client u. Server</li>
+                    <li>Java (J2EE), Beans, JSF</li>
+                    <li>IO Port Programmierung</li>
 
-				</ul>
+                </ul>
 
-			</div>
+            </div>
             <div data-role="footer" data-position="fixed" data-theme="a">
                 <a  data-transition="flip" data-direction="reverse"  data-theme="b" data-icon="back"  data-iconpos="right" href="#page2">Zurück</a>
                 <h1>(c) 2015 by Dr. Jörg Tuttas</h1>
@@ -138,18 +141,18 @@
                 <h1>Lerninhalte 3</h1>
             </div>
             <div data-role="content">
-			<h2>LF4</h2>
-				<ul>
-					<li>Pulsweitenmodulation</li>
+                <h2>LF4</h2>
+                <ul>
+                    <li>Pulsweitenmodulation</li>
 
-				</ul>
-				<h2>LF6</h2>
-				<ul>
-					<li>Nebenläufige Prozesse (Threads)</li>
-					<li>Datentypen (ganzzahlige)</li>
+                </ul>
+                <h2>LF6</h2>
+                <ul>
+                    <li>Nebenläufige Prozesse (Threads)</li>
+                    <li>Datentypen (ganzzahlige)</li>
 
-				</ul>
-			</div>
+                </ul>
+            </div>
             <div data-role="footer" data-position="fixed" data-theme="a">
                 <a  data-transition="flip" data-direction="reverse"  data-theme="b" data-icon="back"  data-iconpos="right" href="#page3">Zurück</a>
                 <h1>(c) 2015 by Dr. Jörg Tuttas</h1>
@@ -160,18 +163,18 @@
                 <h1>Lerninhalte 4</h1>
             </div>
             <div data-role="content">
-<h2>LF4</h2>
-				<ul>
-					<li>Analog- / Digitalwandlung</li>
+                <h2>LF4</h2>
+                <ul>
+                    <li>Analog- / Digitalwandlung</li>
 
-				</ul>
-				<h2>LF6</h2>
-				<ul>
-					<li>Datentypen (ganzzahlige)</li>
-					<li>Websockets</li>
+                </ul>
+                <h2>LF6</h2>
+                <ul>
+                    <li>Datentypen (ganzzahlige)</li>
+                    <li>Websockets</li>
 
-				</ul>			
-			</div>
+                </ul>			
+            </div>
             <div data-role="footer" data-position="fixed" data-theme="a">
                 <a  data-transition="flip" data-direction="reverse"  data-theme="b" data-icon="back"  data-iconpos="right" href="#page4">Zurück</a>
                 <h1>(c) 2015 by Dr. Jörg Tuttas</h1>

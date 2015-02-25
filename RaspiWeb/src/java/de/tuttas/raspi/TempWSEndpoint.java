@@ -50,7 +50,7 @@ public class TempWSEndpoint implements Runnable{
         try {
             if (s!=null) {
               s.getBasicRemote().sendText(msg);
-              System.out.println ("Nachricht ("+msg+")  gesendet an "+s.getId());
+              //System.out.println ("Nachricht ("+msg+")  gesendet an "+s.getId());
             }
         } catch (IOException ex) {
             Logger.getLogger(TempWSEndpoint.class.getName()).log(Level.SEVERE, null, ex);

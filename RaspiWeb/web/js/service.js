@@ -1,4 +1,63 @@
-var webSocket;
+var tempWebSocket;
+var dimWebSocket;
+var serveradress = "localhost:8080";
+
+/**
+ * 
+ * Aufbau der Websocket Verbindungen beim Laden der Seite
+ */
+$(document).ready( function() {
+    if (tempWebSocket == undefined) {
+
+        tempWebSocket = new WebSocket("ws://"+serveradress+"/RaspiWeb/temppoint");
+        tempWebSocket.onmessage = function (event) {
+            var temp = event.data;
+            //console.log("tempSocket receive ("+temp+")");
+            $('#h1temp').text("Temperatur " + temp + " C");
+            $('#tslider').val(temp).slider('refresh');
+        };
+    }
+    if (dimWebSocket == undefined) {
+
+        dimWebSocket = new WebSocket("ws://" + serveradress + "/RaspiWeb/ledpoint");
+        dimWebSocket.onmessage = function (event) {
+            var dim = event.data;
+            console.log("dimSocket receive ("+dim+")");
+
+            $('#slider1').val(dim).slider('refresh');
+            if (dim==0) {
+                $('#toggle').val('0').slider('refresh');
+            }
+            else {
+                $('#toggle').val('100').slider('refresh');
+                
+            }
+        };
+    }
+    $('#toggle').change(function () {
+       if (dimWebSocket != undefined) {
+           dimWebSocket.send($('#toggle').val());
+           console.log("send via Websocket "+$('#toggle').val());
+       } 
+       else {
+           console.log("Keine Websocket Verbindung");
+       }
+    });
+    $('#fieldslider1').change(function() {
+       if (dimWebSocket != undefined) {
+           dimWebSocket.send($('#slider1').val());
+           console.log("send via Websocket "+$('#slider1').val());
+       } 
+       else {
+           console.log("Keine Websocket Verbindung");
+       }
+        
+        
+    });
+
+    
+    
+});
 
 $(document).on('pagebeforeshow', '#page4', function () {
     $('#slider2').empty();
@@ -11,29 +70,8 @@ $(document).on('pagebeforeshow', '#page4', function () {
             $(this).parent().find('.ui-slider-handle').hide();
         }
     }).slider("refresh");
-    
-    if (webSocket == undefined) {
-        //webSocket = new WebSocket("ws://localhost:8080/Raspi/temppoint");
-        
-       webSocket = new WebSocket("ws://service.joerg-tuttas.de:8081/Raspi/temppoint");
-        webSocket.onmessage = function(event){
-                       var temp = event.data;
-
-                       $('#h1temp').text("Temperatur "+temp+" C");
-                       $('#tslider').val(temp).slider('refresh');
-                   };
-       }
 
 
-});
 
-
-$(document).on('pagebeforeshow', '#page3', function () {
-    $('#slider1-range').change(function() {
-        var slider_value = $("#slider1-range").val();
-        $('#glowValue').val(slider_value);
-        $('#glowValue').trigger("keydown");
-        
-    });
 });
 

@@ -39,12 +39,12 @@
                 <a data-transition="slide"   data-icon="arrow-r" class="ui-btn-right" data-iconpos="right" href="#page3">Weiter</a>
             </div>
             <div data-role="content">
-                <h:form>
+                <h:form prependId="false">
                 <div class="toggle" >
-                    <h:selectOneMenu p:data-role="slider" id="toggle"  value="#{raspiBean.ledState}" >
-                        <f:selectItem id="item1" itemLabel="ON" itemValue="1">
+                    <h:selectOneMenu p:data-role="slider" id="toggle"  >
+                        <f:selectItem id="item1" itemLabel="OFF" itemValue="0">
                         </f:selectItem>
-                        <f:selectItem id="item2" itemLabel="OFF" itemValue="0">
+                        <f:selectItem id="item2" itemLabel="ON" itemValue="100">
                         </f:selectItem>
                         <f:ajax  />
                     </h:selectOneMenu>
@@ -65,15 +65,11 @@
             </div>
             <div data-role="content">
                 <h:form prependId="false" >
-                <div data-role="fieldcontain" id="slider1">
+                <div data-role="fieldcontain" id="fieldslider1">
                     
-                    <input type="range" id="slider1-range" value="50" min="0" max="100" step="1"
+                    <input type="range" id="slider1" value="50" min="0" max="100" step="1"
                            />
-                    <div class="glowDiv">
-                    <h:inputText value="#{raspiBean.ledGlow}" id="glowValue" >
-                        <f:ajax  event="keydown" />
-                    </h:inputText>
-                    </div>
+                    
                 </div>
                 </h:form>
             </div>
