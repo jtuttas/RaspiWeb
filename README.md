@@ -1,7 +1,8 @@
 # RaspiWeb
-Switch an LED on or off, dim a LED and read an themperature Sensor of a Raspberry PI via Web interface
+Switch an LED on or off, dim a LED and read an themperature Sensor of a Raspberry PI via Web interface:
+<a href="http://youtu.be/g2B0RAzKV1U">Video</a>
 <hr>
-<iframe width="420" height="315" src="https://www.youtube.com/embed/g2B0RAzKV1U" frameborder="0" allowfullscreen></iframe>
+
 <h2>Technologies used</h2>
 <ul>
 <li>J2EE (glassfish) Application Server</li>
