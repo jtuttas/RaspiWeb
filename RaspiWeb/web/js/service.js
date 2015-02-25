@@ -1,6 +1,8 @@
 var tempWebSocket;
 var dimWebSocket;
-var serveradress = "localhost:8080";
+//var serveradress = "localhost:8080/RaspiWeb";
+var serveradress = "service.joerg-tuttas.de:8081/Raspi";
+
 
 /**
  * 
@@ -9,7 +11,7 @@ var serveradress = "localhost:8080";
 $(document).ready( function() {
     if (tempWebSocket == undefined) {
 
-        tempWebSocket = new WebSocket("ws://"+serveradress+"/RaspiWeb/temppoint");
+        tempWebSocket = new WebSocket("ws://"+serveradress+"/temppoint");
         tempWebSocket.onmessage = function (event) {
             var temp = event.data;
             //console.log("tempSocket receive ("+temp+")");
@@ -19,7 +21,7 @@ $(document).ready( function() {
     }
     if (dimWebSocket == undefined) {
 
-        dimWebSocket = new WebSocket("ws://" + serveradress + "/RaspiWeb/ledpoint");
+        dimWebSocket = new WebSocket("ws://" + serveradress + "/ledpoint");
         dimWebSocket.onmessage = function (event) {
             var dim = event.data;
             console.log("dimSocket receive ("+dim+")");
