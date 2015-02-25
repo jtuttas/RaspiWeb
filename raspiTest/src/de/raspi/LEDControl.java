@@ -28,14 +28,16 @@ public class LEDControl implements Runnable{
     private Thread dimmer;
     private boolean running=false;
     private static LEDControl instance;
+    private int dimValue;
 
     private LEDControl() {
         this(RaspiPin.GPIO_01, PinState.HIGH);
     }
     
     private LEDControl(Pin pin, PinState state) {
-        gpio = GpioFactory.getInstance();
-        opin = gpio.provisionDigitalOutputPin(pin, state);
+        // TODO
+        //gpio = GpioFactory.getInstance();
+        //opin = gpio.provisionDigitalOutputPin(pin, state);
         if (state==PinState.HIGH) this.dim(100);
         else this.dim(0);
         dimmer = new Thread(this);
@@ -65,6 +67,7 @@ public class LEDControl implements Runnable{
     }
 
     public void dim(int i) {
+        dimValue=i;
         onTime=20*i/100;
         System.out.println ("Dimmer set to "+i+"% onTime is "+onTime+" ms");
     }
@@ -89,5 +92,9 @@ public class LEDControl implements Runnable{
             }
             
         }
+    }
+    
+    public int getDimValue() {
+        return dimValue;
     }
 }
