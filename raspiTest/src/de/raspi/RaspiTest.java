@@ -20,6 +20,9 @@ public class RaspiTest {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+       
+        
         LEDControl ledControl = LEDControl.getInstance(RaspiPin.GPIO_01, PinState.HIGH);
         System.out.println("<--Pi4J--> GPIO Control Example ... started.");
         
@@ -43,8 +46,8 @@ public class RaspiTest {
             Logger.getLogger(RaspiTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        ledControl.dim(50);
-        System.out.println("--> GPIO state should be: 50%");
+        ledControl.dim(20);
+        System.out.println("--> GPIO state should be: 20%");
 
         try {
             Thread.sleep(5000);
