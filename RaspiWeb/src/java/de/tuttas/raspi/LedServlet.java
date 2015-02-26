@@ -1,7 +1,7 @@
 /**
  * Parameter:
  * out (plain,xml,json)
- * set (hight,low)
+ * set (high,low)
  * dim (any Value)
  */
 
@@ -73,6 +73,7 @@ public class LedServlet extends HttpServlet {
         
         
         if (request.getParameter("out")!=null) outFormat=request.getParameterValues("out")[0];
+        else outFormat="plain";
         if (request.getParameter("set")!=null) {
             String set=request.getParameterValues("set")[0];
             if (set.compareTo("low")==0) {
