@@ -78,11 +78,13 @@ public class LEDControl implements Runnable{
     public void run() {
         //TODO auto generated Method
         while(running) {
-            opin.high();
-            try {
-                Thread.sleep(onTime);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(LEDControl.class.getName()).log(Level.SEVERE, null, ex);
+            if (onTime != 0) {
+                opin.high();
+                try {
+                    Thread.sleep(onTime);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(LEDControl.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             opin.low();
             try {
