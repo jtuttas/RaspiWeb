@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  *
  * @author Jörg
  */
-public class RaspiTest {
+public class LEDTest {
 
     /**
      * @param args the command line arguments
@@ -33,7 +33,7 @@ public class RaspiTest {
         try {
             Thread.sleep(5000);
         } catch (InterruptedException ex) {
-            Logger.getLogger(RaspiTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LEDTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         // turn off gpio pin #01
@@ -43,7 +43,7 @@ public class RaspiTest {
         try {
             Thread.sleep(5000);
         } catch (InterruptedException ex) {
-            Logger.getLogger(RaspiTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LEDTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         ledControl.dim(20);
@@ -52,7 +52,7 @@ public class RaspiTest {
         try {
             Thread.sleep(5000);
         } catch (InterruptedException ex) {
-            Logger.getLogger(RaspiTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LEDTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         ledControl.shutDown();
