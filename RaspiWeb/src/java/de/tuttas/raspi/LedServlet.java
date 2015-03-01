@@ -54,6 +54,10 @@ public class LedServlet extends HttpServlet {
                 response.setContentType("application/json;charset=UTF-8");
                 out.println ("{ \"dim\": \""+ledControl.getDimValue()+"\"}");
             }
+            else {
+                response.setContentType("text/html;charset=UTF-8");
+                out.print(ledControl.getDimValue());                
+            }
         }
         
     }
