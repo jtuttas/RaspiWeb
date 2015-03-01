@@ -40,6 +40,7 @@ public class BMP180 {
     // Sensor Data
     private float temperature=0;
     private long pressure=0;
+    private BMP180Value bmp180Value;
 
     private BMP180(int i2cbus, int adress) {
         try {
@@ -66,6 +67,10 @@ public class BMP180 {
 
     public float getTemperature() {
         return temperature;
+    }
+    
+    public BMP180Value getValue() {
+        return bmp180Value;
     }
 
     
@@ -148,6 +153,7 @@ public class BMP180 {
             //System.out.println("Temperature: " + temperature + "C");
             
             pressure = calcPressture(UP);
+            bmp180Value = new BMP180Value(temperature, pressure);
             //System.out.println("Pressure: " + pressure + "Pa");
         } catch (InterruptedException ex) {
             Logger.getLogger(BMP180.class.getName()).log(Level.SEVERE, null, ex);

@@ -1,0 +1,6 @@
+{
+    "dbserver": "192.168.178.27",
+    "dbname" : "bmp180",
+    "dbuser" : "bmp180",
+    "dbpassword" : ""    
+}
