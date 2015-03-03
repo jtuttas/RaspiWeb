@@ -29,6 +29,7 @@
             </div>
             <div data-role="footer" data-position="fixed" data-theme="a">
                 <a data-transition="flip" data-direction="reverse"  data-icon="info" data-theme="b" href="#page5">Lerninhalte</a>
+                <a class="ui-btn-right" data-transition="flip" data-direction="reverse"  data-icon="info" data-theme="b" href="#page9">Webservices</a>
                 <h1>(c) 2015 by Dr. Jörg Tuttas</h1>
             </div>
         </div>
@@ -201,6 +202,63 @@
             </div>
             <div data-role="footer" data-position="fixed" data-theme="a">
                 <a  data-transition="flip" data-direction="reverse"  data-theme="b" data-icon="back"  data-iconpos="right" href="#page4">Zurück</a>
+                <h1>(c) 2015 by Dr. Jörg Tuttas</h1>
+            </div>
+        </div>
+        <div data-role="page" id="page9" data-title="Webservices">
+            <div data-role="header">
+                <h1>Webservices</h1>
+            </div>
+            <div data-role="content">
+                <h2>LedServlet</h2>
+                <div class="servletinfo">
+                    Mit Hilfe des <a href="LedServlet" target="_blank">LedServlet</a> ist es möglich den dim-Wert des Dimmers abzufragen bzw. zu setzen (über den Befehl <i>dim</i>). 
+                    Über einen zusätzlichen Parameter (<i>out</i>) ist es möglich unterschiedliche Ausgabeformate zu wählen (xml,json,html und plain {default}).                    
+                    <h3>Parameter</h3>
+                    <ul>
+                        <li><i>out</i> :Ausgabeformat wählen. Unterstützte Formate sind xml,json,html,plain[default]</li>
+                        <li><i>dim</i> :Setzt den Dimmer auf dem angegebenen Wert</li>
+                    </ul>
+                </div>
+                <div class="servletexample">
+                    <h3>Beispiele</h3>
+                    <ul>
+                        <li>Dim Wert abfragen und in xml ausgeben: <a href="LedServlet?out=xml" target="_blank">LedServlet?out=xml</a></li>
+                        <li>Dim Wert auf 50% setzten: <a href="LedServlet?dim=50" target="_blank">LedServlet?dim=50</a></li>
+                        <li>Dim Wert auf 25% setzten und als JSON ausgeben: <a href="LedServlet?dim=25&amp;out=json" target="_blank">LedServlet?dim=25&amp;out=json</a></li>
+                    </ul>
+                    
+                </div>
+                <hr></hr>
+                <h2>SensorServlet</h2>
+                <div class="servletinfo">
+                    Mit Hilfe des <a href="SensorServlet" target="_blank">SensorServlet</a> ist es möglich die Messwerte des Temperatursensors BMP180 (Temperatur und den Luftdruck) abzufragen. 
+                    Ferner gestattet es das Servlet die Sensordaten in eine Datenbank zu schreiben, bzw. wieder auszulesen!
+                    <h3>Parameter</h3>
+                    <ul>
+                        <li><i>out</i> :Ausgabeformat wählen. Unterstützte Formate sind xml,json,html [default],plain,csv</li>
+                        <li><i>log</i> :Wird log auf true gesetzt, so werden die aktuellen Messwerte in die Datenbank geschrieben</li>
+                        <li><i>last</i> :Ließt die letzten als Parameter angegeben Werte aus der Datenbank </li>
+                        <li><i>from</i> :Ließt die letzten Parameter ab dem angegebenen Timestamp (im SQL Format) aus der Datenbank </li>
+                        <li><i>to</i> :Ließt die Messwerte bis zu dem angegebenen Timestamp (im SQL Format) aus der Datenbank </li>
+                    </ul>
+                <div class="servletexample">
+                    <h3>Beispiele</h3>
+                    <ul>
+                        <li>Abfrage der aktuellen Messwerte als HTML: <a href="SensorServlet" target="_blank">SensorServlet</a></li>
+                        <li>Abfrage der aktuellen Messwerte als XML: <a href="SensorServlet?out=xml" target="_blank">SensorServlet?out=xml</a></li>
+                        <li>Abfrage der aktuellen Messwerte als JSON: <a href="SensorServlet?out=json" target="_blank">SensorServlet?out=json</a></li>
+                        <li>Schreiben der Messwerte in die Datenbank und Ausgabe als XML: <a href="SensorServlet?out=xml&amp;log=true" target="_blank">SensorServlet?out=xml&amp;log=true</a></li>
+                        <li>Auslesen der letzten 10 Messwerte und Ausgabe als csv: <a href="SensorServlet?out=csv&amp;last=10" target="_blank">SensorServlet?out=csv&amp;last=10</a></li>
+                        <li>Auslesen ab dem 2.3.2015 und Ausgabe als xml: <a href="SensorServlet?out=xml&amp;from='2015-3-2'" target="_blank">SensorServlet?out=xml&amp;from='2015-3-2'</a></li>
+                        <li>Auslesen Messwerte zwischen dem 3.3.2015 und 5.3.2015 und Ausgabe als html: <a href="SensorServlet?out=xml&amp;from='2015-3-3'&amp;to='2015-3-5'" target="_blank">SensorServlet?out=xml&amp;from='2015-3-3'&amp;to='2015-3-5'</a></li>
+                    </ul>
+                    
+                </div>
+                </div>
+            </div>
+            <div data-role="footer" data-position="fixed" data-theme="a">
+                <a  data-transition="flip" data-direction="reverse"  data-theme="b" data-icon="back"  data-iconpos="right" href="#page1">Zurück</a>
                 <h1>(c) 2015 by Dr. Jörg Tuttas</h1>
             </div>
         </div>

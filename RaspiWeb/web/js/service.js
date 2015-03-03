@@ -86,6 +86,7 @@ $(document).on('pagebeforeshow', '#page3', function () {
     
 $(document).on('pagebeforeshow', '#page4', function () {
     $('#slider2').empty();
+    $('#slider3').empty();
 
     $('<input>').appendTo('#slider2').attr({'name': 'slider', 'id': 'tslider', 'data-highlight': 'true', 'min': '15', 'max': '35', 'value': '15', 'type': 'range'}).slider({
         create: function (event, ui) {

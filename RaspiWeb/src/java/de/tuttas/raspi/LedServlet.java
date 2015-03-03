@@ -40,9 +40,17 @@ public class LedServlet extends HttpServlet {
         
         try (PrintWriter out = response.getWriter()) {
             if (outFormat.compareTo("plain")==0) {
-                response.setContentType("text/html;charset=UTF-8");
+                response.setContentType("text/plain;charset=UTF-8");
                 out.print(ledControl.getDimValue());
             }
+            else if (outFormat.compareTo("html")==0) {
+                                out.println("<html><head><title>Sensordata</title>");
+                    out.println("<link rel=\"stylesheet\" href=\"css/sensordata.css\" />");
+                    out.println("</head><body>");
+                    out.println ("<div class=\"measurement\">"+ledControl.getDimValue()+"</div>");
+                    out.println("</body></html>");
+            }
+
             else if (outFormat.compareTo("xml")==0) {
                 response.setContentType("text/xml;charset=UTF-8");
                 out.println ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -52,10 +60,10 @@ public class LedServlet extends HttpServlet {
             }
             else if (outFormat.compareTo("json")==0) {
                 response.setContentType("application/json;charset=UTF-8");
-                out.println ("{ \"dim\": \""+ledControl.getDimValue()+"\"}");
+                out.println ("{ \"dim\": "+ledControl.getDimValue()+"}");
             }
             else {
-                response.setContentType("text/html;charset=UTF-8");
+                response.setContentType("text/plain;charset=UTF-8");
                 out.print(ledControl.getDimValue());                
             }
         }
