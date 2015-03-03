@@ -14,10 +14,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletContext;
@@ -157,18 +160,35 @@ public class SensorServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         data = new ArrayList<BMP180Value>();
-            data.add(bmp180.getValue());
+        String sqlFrom = "'" + new Timestamp(0).toString() + "'";
+        String sqlTo = "'" + new Timestamp(GregorianCalendar.getInstance().getTimeInMillis()).toString() + "'";
+        int last = -1;
+        if (request.getParameter("from") != null) {
+            sqlFrom = request.getParameterValues("from")[0];
+        }
+        if (request.getParameter("to") != null) {
+            sqlTo = request.getParameterValues("to")[0];
+        }
+        String sql = "select * from " + DBlogger.TABLENAME + " where timestamp BETWEEN " + sqlFrom + " AND " + sqlTo + " ORDER BY id DESC";
         if (request.getParameter("out") != null) {
             outFormat = request.getParameterValues("out")[0];
         } else {
             outFormat = "html";
         }
         if (request.getParameter("last") != null) {
-            int last = Integer.parseInt(request.getParameterValues("last")[0]);
+            last = Integer.parseInt(request.getParameterValues("last")[0]);
+            sql = sql + " LIMIT " + (last);
+        }
+        if (request.getParameter("from") == null
+                && request.getParameter("to") == null
+                && request.getParameter("last") == null) {
+            data.add(bmp180.getValue());
+        } else {
+            //errorMsg = sql;
             Statement stmt = null;
             try {
                 stmt = dblogger.getConnection().createStatement();
-                ResultSet rs = stmt.executeQuery("select * from "+DBlogger.TABLENAME+" ORDER BY id DESC LIMIT " + (last-1));
+                ResultSet rs = stmt.executeQuery(sql);
                 while (rs.next()) {
                     data.add(new BMP180Value(rs.getTimestamp("timestamp"), rs.getFloat("temp"), rs.getInt("pressure")));
 
@@ -183,11 +203,12 @@ public class SensorServlet extends HttpServlet {
                     e.printStackTrace();
                 }
             }
-        } 
+        }
+
         if (request.getParameter("log") != null) {
             if (request.getParameterValues("log")[0].compareTo("true") == 0) {
                 dblogger.log(bmp180.getValue());
-                
+
             }
         }
         processRequest(request, response);
