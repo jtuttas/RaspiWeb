@@ -11,6 +11,8 @@ import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
+
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,15 +31,16 @@ public class LEDControl implements Runnable{
     private boolean running=false;
     private static LEDControl instance;
     private int dimValue;
-
+    private ArrayList<LEDValueChanged> listeners = new ArrayList<>();
+    
     private LEDControl() {
         this(RaspiPin.GPIO_01, PinState.HIGH);
     }
     
     private LEDControl(Pin pin, PinState state) {
-        // TODO
-        gpio = GpioFactory.getInstance();
-        opin = gpio.provisionDigitalOutputPin(pin, state);
+        // TODO ändern zum Testen
+        //gpio = GpioFactory.getInstance();
+        //opin = gpio.provisionDigitalOutputPin(pin, state);
         if (state==PinState.HIGH) this.dim(100);
         else this.dim(0);
         dimmer = new Thread(this);
@@ -70,23 +73,26 @@ public class LEDControl implements Runnable{
         dimValue=i;
         onTime=20*i/100;
         System.out.println ("Dimmer set to "+i+"% onTime is "+onTime+" ms");
+        for (LEDValueChanged l:listeners) {
+            l.valueChanged(i);
+        }
     }
 
     
 
     @Override
     public void run() {
-        //TODO auto generated Method
+
         while(running) {
             if (onTime != 0) {
-                opin.high();
+                if (opin!=null) opin.high();
                 try {
                     Thread.sleep(onTime);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(LEDControl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            opin.low();
+            if (opin!=null) opin.low();
             try {
                 Thread.sleep(20-onTime);
             } catch (InterruptedException ex) {
@@ -98,5 +104,13 @@ public class LEDControl implements Runnable{
     
     public int getDimValue() {
         return dimValue;
+    }
+
+    public void addListener(LEDValueChanged aThis) {
+        listeners.add(aThis);
+    }
+
+    public void removeListener(LEDValueChanged aThis) {
+        listeners.remove(aThis);
     }
 }

@@ -27,6 +27,7 @@ import org.json.simple.parser.ParseException;
 public class DBlogger {
 
     Connection connection = null;
+    public static final String TABLENAME="sensordata";
 
 
     public DBlogger(String serverIP, String dbName, String user, String password) {
@@ -34,7 +35,7 @@ public class DBlogger {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             connection = (Connection) DriverManager.getConnection("jdbc:mysql://" + serverIP + ":3306/" + dbName, user, password);
-
+            createTable();
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(DBlogger.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -50,8 +51,8 @@ public class DBlogger {
         Statement stmt = null;
         try {
             stmt = connection.createStatement();
-            if (bmp180Value!=null) stmt.execute("insert into bmp180 (timestamp,temp,pressure) Values (now(),"+bmp180Value.getTemperature()+","+bmp180Value.getPressure()+")");
-            else stmt.execute("insert into bmp180 (timestamp,temp,pressure) Values (now(),-1,0)");
+            if (bmp180Value!=null) stmt.execute("insert into "+TABLENAME+" (timestamp,temp,pressure) Values (now(),"+bmp180Value.getTemperature()+","+bmp180Value.getPressure()+")");
+            else stmt.execute("insert into "+TABLENAME+" (timestamp,temp,pressure) Values (now(),-1,0)");
         } catch (SQLException ex) {
             Logger.getLogger(DBlogger.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -61,7 +62,7 @@ public class DBlogger {
                 e.printStackTrace();
             }
         }
-        limit(10);
+        limit(10000);
 
     }
 
@@ -88,7 +89,7 @@ public class DBlogger {
                 System.out.println ("Conntect to MYSQL Server:"+jsonObject.get("dbserver"));
                 DBlogger dbl = new DBlogger(jsonObject.get("dbserver").toString(), jsonObject.get("dbname").toString(), jsonObject.get("dbuser").toString(), jsonObject.get("dbpassword").toString());
                 bmp180=BMP180.getInstance(1,0x77);
-                bmp180.readSensorData();
+                Thread.sleep(2000);
                 System.out.println ("Temperatur:"+bmp180.getTemperature()+" C");
                 System.out.println ("Luftdruck:"+bmp180.getPressure()+" Pa");
                 dbl.log(bmp180.getValue());
@@ -101,6 +102,8 @@ public class DBlogger {
                 Logger.getLogger(DBlogger.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println ("Kann Konfigurationsdatei hat ein flasches Format!");
                 exit(1);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DBlogger.class.getName()).log(Level.SEVERE, null, ex);
             }
         }  
     }
@@ -109,15 +112,38 @@ public class DBlogger {
         Statement stmt = null;
         try {
             stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("select count(*) as num from bmp180");
+            ResultSet rs = stmt.executeQuery("select count(*) as num from "+TABLENAME);
             rs.next();
             System.out.println ("Found "+rs.getString("num")+" rows!");
             int num = Integer.parseInt(rs.getString("num"));
             if (num>max) {
                 stmt = connection.createStatement();
-                stmt.execute("DELETE FROM bmp180 ORDER BY id LIMIT "+(num-max));	
+                stmt.execute("DELETE FROM "+TABLENAME+" ORDER BY id LIMIT "+(num-max));	
             }
                   
+        } catch (SQLException ex) {
+            Logger.getLogger(DBlogger.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void createTable() {
+        String sqlString="CREATE TABLE IF NOT EXISTS `"+TABLENAME+"` ( `id` int(11) NOT NULL AUTO_INCREMENT,"+
+  "`timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,"+
+  "`temp` float DEFAULT NULL,"+
+  "`pressure` int(11) DEFAULT NULL,"+
+  "PRIMARY KEY (`id`)"+
+") ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=latin1;";
+
+        Statement stmt = null;
+        try {
+            stmt = connection.createStatement();
+            stmt.execute(sqlString);
         } catch (SQLException ex) {
             Logger.getLogger(DBlogger.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

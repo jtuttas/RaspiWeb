@@ -11,6 +11,7 @@ import com.pi4j.io.i2c.I2CFactory;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,11 +19,11 @@ import java.util.logging.Logger;
  *
  * @author Jörg
  */
-public class BMP180 {
+public class BMP180 implements Runnable{
 
     private static BMP180 instance;
-    private I2CBus bus;
-    private I2CDevice bmp180;
+    private I2CBus bus=null;
+    private I2CDevice bmp180=null;
     private static short AC1;
     private static short AC2;
     private static short AC3;
@@ -42,7 +43,14 @@ public class BMP180 {
     private long pressure=0;
     private BMP180Value bmp180Value;
 
+    // Listener
+    private ArrayList<BMP180ValueChangeListener> listeners = new ArrayList<>();
+    
+    Thread runner ;
+    
     private BMP180(int i2cbus, int adress) {
+        // TODO  ändern zum Testen
+        /*
         try {
             bus = I2CFactory.getInstance(i2cbus);
             //System.out.println("Connected to bus OK!!!");
@@ -52,6 +60,9 @@ public class BMP180 {
         } catch (IOException ex) {
             Logger.getLogger(BMP180.class.getName()).log(Level.SEVERE, null, ex);
         }
+        */
+        runner = new Thread(this);
+        runner.start();
     }
 
     public static BMP180 getInstance(int i2cbus, int adr) {
@@ -70,10 +81,25 @@ public class BMP180 {
     }
     
     public BMP180Value getValue() {
+        if (bmp180==null) {
+            if (bmp180Value==null) {
+                bmp180Value= new BMP180Value(22, 10000);
+            }
+            else {
+                bmp180Value=new BMP180Value(22, bmp180Value.getPressure()+1);
+            }
+        }
         return bmp180Value;
     }
 
+    public void addListener(BMP180ValueChangeListener l) {
+        listeners.add(l);
+        System.out.println ("addListener "+l+" num="+listeners.size());
+    }
     
+    public void removeListener(BMP180ValueChangeListener l) {
+        listeners.remove(l);
+    }
     
     
     private void gettingCallibration() throws IOException {
@@ -112,7 +138,8 @@ public class BMP180 {
          */
     }
 
-    public void readSensorData() throws IOException {
+    private void readSensorData() throws IOException {
+        if (bmp180==null) return;
         byte[] bytesTemp = new byte[2];
         byte[] bytesPress = new byte[3];
         try {
@@ -227,6 +254,31 @@ public class BMP180 {
                // System.out.println ("X2="+X2);
 
         return (p + (X1 + X2 + 3791) / (1L << 4));
+    }
+
+    @Override
+    public void run() {
+        BMP180Value oldValue;
+        while (true) {
+            try {
+                
+                oldValue=this.getValue();
+                this.readSensorData();
+                //System.out.println ("Messthread läuft data="+this.getValue());
+                if (oldValue!=null && !oldValue.isLike(this.getValue())) {
+                    for (BMP180ValueChangeListener l:listeners) {
+                        l.valueChanged(bmp180Value);
+                    }
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(BMP180.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(BMP180.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
 }

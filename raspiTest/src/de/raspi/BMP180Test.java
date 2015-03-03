@@ -21,14 +21,14 @@ public class BMP180Test {
     
 
     public static void main(String[] args) {
-        try {
             bmp180=BMP180.getInstance(1,0x77);
-            bmp180.readSensorData();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(BMP180Test.class.getName()).log(Level.SEVERE, null, ex);
+            }
             System.out.println ("Temperatur:"+bmp180.getTemperature()+" C");
             System.out.println ("Luftdruck:"+bmp180.getPressure()+" Pa");
-        } catch (IOException ex) {
-            Logger.getLogger(BMP180Test.class.getName()).log(Level.SEVERE, null, ex);
-        }
             
     }
 
