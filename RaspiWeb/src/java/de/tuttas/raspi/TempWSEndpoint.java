@@ -5,9 +5,14 @@
  */
 package de.tuttas.raspi;
 
+import de.raspi.BMP180;
+import de.raspi.BMP180Value;
+import de.raspi.BMP180ValueChangeListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.Init;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -19,38 +24,42 @@ import javax.websocket.server.ServerEndpoint;
  * @author Jörg
  */
 @ServerEndpoint("/temppoint")
-public class TempWSEndpoint implements Runnable{
+public class TempWSEndpoint implements BMP180ValueChangeListener {
 
-     private Session s;
-     Thread runner = new Thread(this);
-     private double temp=40;
-     private double offset=0.5;
+    Session session;
+    BMP180 bmp180 = BMP180.getInstance(1, 0x77);
+    BMP180Value lastValue;
+
     
-     @OnOpen
-    public void onOpen(Session session){
-        s=session;
-        System.out.println(session.getId() + " has opened a connection"); 
-         send("10.0");
-         runner.start();
-    }
- 
-     @OnClose
-    public void onClose(Session session){
-        System.out.println("Session " +session.getId()+" has ended");
-        s=null;
-    }
     
+    @OnOpen
+    public void onOpen(Session session) {
+        this.session=session;
+        bmp180.addListener(this);
+        System.out.println("TempWSEndPoint " + session.getId() + " has opened a connection");
+        if (lastValue != null) {
+            send();
+        }
+    }
+
+    @OnClose
+    public void onClose(Session session) {
+        System.out.println("Session " + session.getId() + " has ended");
+        this.session=null;
+        bmp180.removeListener(this);
+    }
+
     @OnMessage
     public String onMessage(String message) {
-        System.out.println ("message="+message);
+        System.out.println("message=" + message);
         return null;
     }
 
-    public  void send(String msg) {
+    public void send() {
         try {
-            if (s!=null) {
-              s.getBasicRemote().sendText(msg);
-              //System.out.println ("Nachricht ("+msg+")  gesendet an "+s.getId());
+            if (session != null) {
+                session.getBasicRemote().sendText(lastValue.toJson(true));
+                //System.out.println("Send " + lastValue.toJson(true));
             }
         } catch (IOException ex) {
             Logger.getLogger(TempWSEndpoint.class.getName()).log(Level.SEVERE, null, ex);
@@ -58,17 +67,8 @@ public class TempWSEndpoint implements Runnable{
     }
 
     @Override
-    public void run() {
-        while (s!=null) {
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(TempWSEndpoint.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            send(Double.toString(temp));
-            temp+=offset;
-            if (temp>50) offset=-offset;
-            if (temp<10) offset=-offset;
-        }
+    public void valueChanged(BMP180Value v) {
+        lastValue = v;
+        send();
     }
 }

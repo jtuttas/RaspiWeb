@@ -5,6 +5,7 @@
  */
 package de.tuttas.raspi;
 
+import de.raspi.BMP180;
 import de.raspi.BMP180Value;
 import de.raspi.DBlogger;
 import java.io.BufferedReader;
@@ -40,10 +41,12 @@ public class SensorServlet extends HttpServlet {
     private String outFormat = "plain";
     private DBlogger dblogger;
     private ArrayList<BMP180Value> data;
+    private BMP180 bmp180;
 
     @Override
     public void init() throws ServletException {
         super.init(); //To change body of generated methods, choose Tools | Templates.
+        bmp180 = BMP180.getInstance(1, 0x77);
         Statement stmt = null;
         try {
             JSONParser parser = new JSONParser();
@@ -153,31 +156,21 @@ public class SensorServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // ToDO ergänzen
-        //BMP180 bmp180 = BMP180.getInstance(1,0x77);
-        //bmp180.readSensorData();
         data = new ArrayList<BMP180Value>();
-        data.add(new BMP180Value(10, 100));
-        data.add(new BMP180Value(20, 101));
-        data.add(new BMP180Value(30, 102));
+            data.add(bmp180.getValue());
         if (request.getParameter("out") != null) {
             outFormat = request.getParameterValues("out")[0];
         } else {
             outFormat = "html";
-        }
-        if (request.getParameter("log") != null) {
-            if (request.getParameterValues("log")[0].compareTo("true") == 0) {
-                dblogger.log(new BMP180Value(20, 22));
-            }
         }
         if (request.getParameter("last") != null) {
             int last = Integer.parseInt(request.getParameterValues("last")[0]);
             Statement stmt = null;
             try {
                 stmt = dblogger.getConnection().createStatement();
-                ResultSet rs = stmt.executeQuery("select * from bmp180 ORDER BY id DESC LIMIT " + last);
+                ResultSet rs = stmt.executeQuery("select * from "+DBlogger.TABLENAME+" ORDER BY id DESC LIMIT " + (last-1));
                 while (rs.next()) {
-                    data.add(new BMP180Value(rs.getDate("timestamp"),rs.getFloat("temp"),rs.getInt("pressure")));
+                    data.add(new BMP180Value(rs.getTimestamp("timestamp"), rs.getFloat("temp"), rs.getInt("pressure")));
 
                 }
 
@@ -189,6 +182,12 @@ public class SensorServlet extends HttpServlet {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        } 
+        if (request.getParameter("log") != null) {
+            if (request.getParameterValues("log")[0].compareTo("true") == 0) {
+                dblogger.log(bmp180.getValue());
+                
             }
         }
         processRequest(request, response);

@@ -1,7 +1,8 @@
 var tempWebSocket;
 var dimWebSocket;
-//var serveradress = "localhost:8080/RaspiWeb";
-var serveradress = "service.joerg-tuttas.de:8081/Raspi";
+// TODO Adresse anpassen
+var serveradress = "localhost:8080/RaspiWeb";
+//var serveradress = "service.joerg-tuttas.de:8081/Raspi";
 
 
 /**
@@ -13,10 +14,14 @@ $(document).ready( function() {
 
         tempWebSocket = new WebSocket("ws://"+serveradress+"/temppoint");
         tempWebSocket.onmessage = function (event) {
-            var temp = event.data;
-            //console.log("tempSocket receive ("+temp+")");
-            $('#h1temp').text("Temperatur " + temp + " C");
-            $('#tslider').val(temp).slider('refresh');
+           
+            var jobj = jQuery.parseJSON(event.data );
+            $('#h1temp').text("Temperatur " + jobj.temperature + " C");
+            $('#tslider').val(jobj.temperature).slider('refresh');
+            $('#h1pressure').text("Pressure " + jobj.pressure + " Pa");
+            $('#pslider').val(jobj.pressure).slider('refresh');
+            
+            
         };
     }
     if (dimWebSocket == undefined) {
@@ -26,12 +31,21 @@ $(document).ready( function() {
             var dim = event.data;
             console.log("dimSocket receive ("+dim+")");
 
-            $('#slider1').val(dim).slider('refresh');
+            $('#slider1').val(dim); 
+            if ($('#slider1').is(":visible")) {
+                $('#slider1').slider('refresh');
+            }
             if (dim==0) {
-                $('#toggle').val('0').slider('refresh');
+                $('#toggle').val('0');
+                if ($('#toggle').is(":visible")) {
+                  $('#toggle').slider('refresh');
+                }
             }
             else {
-                $('#toggle').val('100').slider('refresh');
+                $('#toggle').val('100');
+                if ($('#toggle').is(":visible")) {
+                    $('#toggle').slider('refresh');
+                }
                 
             }
         };
@@ -45,6 +59,18 @@ $(document).ready( function() {
            console.log("Keine Websocket Verbindung");
        }
     });
+
+    
+    
+});
+
+$(document).on('pagebeforeshow', '#page2', function () {
+                $('#toggle').slider('refresh');
+    });
+
+$(document).on('pagebeforeshow', '#page3', function () {
+    
+    $('#slider1').slider('refresh');
     $('#fieldslider1').change(function() {
        if (dimWebSocket != undefined) {
            dimWebSocket.send($('#slider1').val());
@@ -56,15 +82,12 @@ $(document).ready( function() {
         
         
     });
-
+    });
     
-    
-});
-
 $(document).on('pagebeforeshow', '#page4', function () {
     $('#slider2').empty();
 
-    $('<input>').appendTo('#slider2').attr({'name': 'slider', 'id': 'tslider', 'data-highlight': 'true', 'min': '0', 'max': '100', 'value': '0', 'type': 'range'}).slider({
+    $('<input>').appendTo('#slider2').attr({'name': 'slider', 'id': 'tslider', 'data-highlight': 'true', 'min': '15', 'max': '35', 'value': '15', 'type': 'range'}).slider({
         create: function (event, ui) {
             $(this).parent().find('input').hide();
             $(this).parent().find('input').css('margin-left', '-9999px'); // Fix for some FF versions
@@ -73,6 +96,14 @@ $(document).on('pagebeforeshow', '#page4', function () {
         }
     }).slider("refresh");
 
+    $('<input>').appendTo('#slider3').attr({'name': 'slider', 'id': 'pslider', 'data-highlight': 'true', 'min': '80000', 'max': '120000', 'value': '80000', 'type': 'range'}).slider({
+        create: function (event, ui) {
+            $(this).parent().find('input').hide();
+            $(this).parent().find('input').css('margin-left', '-9999px'); // Fix for some FF versions
+            $(this).parent().find('.ui-slider-track').css('margin', '0 15px 0 15px');
+            $(this).parent().find('.ui-slider-handle').hide();
+        }
+    }).slider("refresh");
 
 
 });
