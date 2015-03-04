@@ -14,6 +14,7 @@
         <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
         <script src="js/service.js"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['line', 'corechart']}]}"></script>
         <link rel="stylesheet" href="./css/custom.css" />
     </h:head>
 
@@ -82,6 +83,7 @@
             <div data-role="header">
                 <a  data-transition="slide"  data-direction="reverse" data-icon="arrow-l" class="ui-btn-left" data-iconpos="left"  href="#page3">zurück</a>
                 <h1>Thermometer</h1>
+                <a data-transition="slide"  data-icon="arrow-r" class="ui-btn-right" data-iconpos="right" href="#page10">Weiter</a>
             </div>
             <div data-role="content">
                 
@@ -259,6 +261,18 @@
             </div>
             <div data-role="footer" data-position="fixed" data-theme="a">
                 <a  data-transition="flip" data-direction="reverse"  data-theme="b" data-icon="back"  data-iconpos="right" href="#page1">Zurück</a>
+                <h1>(c) 2015 by Dr. Jörg Tuttas</h1>
+            </div>
+        </div>
+        <div data-role="page" id="page10">
+            <div data-role="header">
+                <a  data-transition="slide"  data-direction="reverse" data-icon="arrow-l" class="ui-btn-left" data-iconpos="left"  href="#page4">zurück</a>
+                <h1>Chart</h1>
+            </div>
+            <div data-role="content">
+                 <div id="chartdiv"></div>
+            </div>
+            <div data-role="footer" data-position="fixed" data-theme="a">
                 <h1>(c) 2015 by Dr. Jörg Tuttas</h1>
             </div>
         </div>

@@ -1,27 +1,27 @@
 var tempWebSocket;
 var dimWebSocket;
 // TODO Adresse anpassen
-var serveradress = "localhost:8080/RaspiWeb";
-//var serveradress = "service.joerg-tuttas.de:8081/Raspi";
+//var serveradress = "localhost:8080/RaspiWeb";
+var serveradress = "service.joerg-tuttas.de:8081/Raspi";
 
 
 /**
  * 
  * Aufbau der Websocket Verbindungen beim Laden der Seite
  */
-$(document).ready( function() {
+$(document).ready(function () {
     if (tempWebSocket == undefined) {
 
-        tempWebSocket = new WebSocket("ws://"+serveradress+"/temppoint");
+        tempWebSocket = new WebSocket("ws://" + serveradress + "/temppoint");
         tempWebSocket.onmessage = function (event) {
-           
-            var jobj = jQuery.parseJSON(event.data );
+
+            var jobj = jQuery.parseJSON(event.data);
             $('#h1temp').text("Temperatur " + jobj.temperature + " C");
             $('#tslider').val(jobj.temperature).slider('refresh');
             $('#h1pressure').text("Pressure " + jobj.pressure + " Pa");
             $('#pslider').val(jobj.pressure).slider('refresh');
-            
-            
+
+
         };
     }
     if (dimWebSocket == undefined) {
@@ -29,16 +29,16 @@ $(document).ready( function() {
         dimWebSocket = new WebSocket("ws://" + serveradress + "/ledpoint");
         dimWebSocket.onmessage = function (event) {
             var dim = event.data;
-            console.log("dimSocket receive ("+dim+")");
+            console.log("dimSocket receive (" + dim + ")");
 
-            $('#slider1').val(dim); 
+            $('#slider1').val(dim);
             if ($('#slider1').is(":visible")) {
                 $('#slider1').slider('refresh');
             }
-            if (dim==0) {
+            if (dim == 0) {
                 $('#toggle').val('0');
                 if ($('#toggle').is(":visible")) {
-                  $('#toggle').slider('refresh');
+                    $('#toggle').slider('refresh');
                 }
             }
             else {
@@ -46,44 +46,44 @@ $(document).ready( function() {
                 if ($('#toggle').is(":visible")) {
                     $('#toggle').slider('refresh');
                 }
-                
+
             }
         };
     }
     $('#toggle').change(function () {
-       if (dimWebSocket != undefined) {
-           dimWebSocket.send($('#toggle').val());
-           console.log("send via Websocket "+$('#toggle').val());
-       } 
-       else {
-           console.log("Keine Websocket Verbindung");
-       }
+        if (dimWebSocket != undefined) {
+            dimWebSocket.send($('#toggle').val());
+            console.log("send via Websocket " + $('#toggle').val());
+        }
+        else {
+            console.log("Keine Websocket Verbindung");
+        }
     });
 
-    
-    
+
+
 });
 
 $(document).on('pagebeforeshow', '#page2', function () {
-                $('#toggle').slider('refresh');
-    });
+    $('#toggle').slider('refresh');
+});
 
 $(document).on('pagebeforeshow', '#page3', function () {
-    
+
     $('#slider1').slider('refresh');
-    $('#fieldslider1').change(function() {
-       if (dimWebSocket != undefined) {
-           dimWebSocket.send($('#slider1').val());
-           console.log("send via Websocket "+$('#slider1').val());
-       } 
-       else {
-           console.log("Keine Websocket Verbindung");
-       }
-        
-        
+    $('#fieldslider1').change(function () {
+        if (dimWebSocket != undefined) {
+            dimWebSocket.send($('#slider1').val());
+            console.log("send via Websocket " + $('#slider1').val());
+        }
+        else {
+            console.log("Keine Websocket Verbindung");
+        }
+
+
     });
-    });
-    
+});
+
 $(document).on('pagebeforeshow', '#page4', function () {
     $('#slider2').empty();
     $('#slider3').empty();
@@ -108,4 +108,76 @@ $(document).on('pagebeforeshow', '#page4', function () {
 
 
 });
+$(document).on('pagebeforeshow', '#page10', function () {
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawChart);
+    
 
+    function drawChart() {
+
+        var fromDate = getYesterday();
+
+        var materialChart;
+        var materialDiv = document.getElementById('material');
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'Last 24h');
+        data.addColumn('number', "Temperature C");
+        data.addColumn('number', "Pressure mBar");
+        var param = "?out=json&from=" + fromDate;
+        console.log(param);
+        $.ajax({url: "SensorServlet?out=json&from=" + fromDate, success: function (result) {
+                // demo = JSON.parse("{\"sensordata\" : [{\"temperature\" : 22.0,\"pressure\" : 17646,\"timestamp\" : \"2015-03-03 16:36:19.182\"}]}");
+                console.log("receive data");
+                var rdata = new Array();
+                for (i = 0; i < result.sensordata.length; i++) {
+                    var r = new Array();
+                    r[0] = new Date(result.sensordata[i].timestamp);
+                    r[1] = result.sensordata[i].temperature;
+                    r[2] = result.sensordata[i].pressure / 100;
+                    rdata[i] = r;
+                    //console.log(rdata);
+                }
+
+                data.addRows(rdata);
+                var options = {
+                    title: 'Temperature and Pressure with Raspberry PI and BMP180',
+                    
+                    width: 900,
+                    height: 500,
+                    vAxes: {0: {},
+                            1: {}
+                    },
+                    series: {
+                        0: {axis: 'Temps'},
+                        1: {axis: 'Pressure'}
+                    },
+                    
+                    axes: {
+                        // Adds labels to each axis; they don't have to match the axis names.
+                        y: {
+                            Temps: {label: 'Temps (Celsius)'},
+                            Pressure: {label: 'Pressure (Pascal)'},
+                        }
+                    },
+                    colors: ["red", "blue"]
+                    
+                };
+var chart =  new google.charts.Line(document.getElementById('chartdiv'));
+        chart.draw(data, options);
+
+            }});
+
+
+
+    }
+});
+
+/**
+ * Das gestrige Datum im SQL Format
+ * @returns {String} Der Datum String
+ */
+function getYesterday() {
+    var now = new Date();
+    var yesterday = new Date(now.getTime() - 1000 * 60 * 60 * 24);
+    return "'" + yesterday.getFullYear() + "-" + (yesterday.getMonth() + 1) + "-" + (yesterday.getDay() + 1) + " " + yesterday.getHours() + ":" + yesterday.getMinutes() + ":" + yesterday.getSeconds() + "'";
+}

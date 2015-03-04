@@ -106,14 +106,14 @@ public class SensorServlet extends HttpServlet {
                 } else if (outFormat.compareTo("csv") == 0) {
                     response.setContentType("text/csv;charset=UTF-8");
                     response.addHeader("Content-Disposition", "attachment;filename=sensordata.csv");
-                    out.println("\"TimeStamp\";\"Temperature\";\"Pressure\"");
+                    out.println("\"TimeStamp\";\"Datetime\";\"Temperature\";\"Pressure\"");
                 } else if (outFormat.compareTo("xml") == 0) {
                     response.setContentType("text/xml;charset=UTF-8");
                     out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                     out.println("<sensordata>");
                 } else if (outFormat.compareTo("json") == 0) {
                     response.setContentType("application/json;charset=UTF-8");
-                    out.println("{\n\"sensordata\" : [\n");
+                    out.print("{\"sensordata\" : [");
                 } else {
                     response.setContentType("text/html;charset=UTF-8");
                     out.println("<html><head><title>Sensordata</title>");
@@ -128,7 +128,7 @@ public class SensorServlet extends HttpServlet {
                     } else if (outFormat.compareTo("xml") == 0) {
                         out.print(v.toXml());
                     } else if (outFormat.compareTo("json") == 0) {
-                        out.print(v.toJson(data.indexOf(v) == data.size() - 1));
+                        out.println(v.toJson(data.indexOf(v) == data.size() - 1));
                     } else {
                         out.print(v.toHtml());
                     }
@@ -138,7 +138,7 @@ public class SensorServlet extends HttpServlet {
                 } else if (outFormat.compareTo("xml") == 0) {
                     out.println("</sensordata>");
                 } else if (outFormat.compareTo("json") == 0) {
-                    out.println("]\n}");
+                    out.print("]}");
                 } else {
                     out.println("</body></html>");
                 }
