@@ -61,7 +61,7 @@ public class BMP180Value {
     }
     
     public String toXml() {
-        String out= "<measure timestamp=\""+timestamp+"\">\n";
+        String out= "<measure timestamp=\""+timestamp.getTime()+"\" datetime=\""+timestamp.toString()+"\" >\n";
         out+="<temperature>"+temperature+"</temperature>\n";
         out+="<pressure>"+pressure+"</pressure>\n";
         out+="</measure>\n";
@@ -70,15 +70,16 @@ public class BMP180Value {
     
     public String toJson(boolean last) {
         String out = "{";
-        out += "\"temperature\" : "+temperature+",\n";
-        out += "\"pressure\" : "+pressure+",\n";
-        out += "\"timestamp\" : \""+timestamp.toString()+"\"}\n";
+        out += "\"temperature\" : "+temperature+",";
+        out += "\"pressure\" : "+pressure+",";
+        out += "\"datetime\" : \""+timestamp.toString()+"\",";
+        out += "\"timestamp\" : "+timestamp.getTime()+"}";
         if (!last) out+=",";
         return out;
     }
     
     public String toCsv() {
-        String out = "\""+timestamp.toString()+"\";"+temperature+";"+pressure+"\n";
+        String out = timestamp.getTime()+";\""+timestamp.toString()+"\";"+temperature+";"+pressure+"\n";
         return out;
     }
     

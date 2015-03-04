@@ -50,7 +50,6 @@ public class BMP180 implements Runnable{
     
     private BMP180(int i2cbus, int adress) {
         // TODO  ändern zum Testen
-        /*
         try {
             bus = I2CFactory.getInstance(i2cbus);
             //System.out.println("Connected to bus OK!!!");
@@ -60,7 +59,6 @@ public class BMP180 implements Runnable{
         } catch (IOException ex) {
             Logger.getLogger(BMP180.class.getName()).log(Level.SEVERE, null, ex);
         }
-        */
         runner = new Thread(this);
         runner.start();
     }
