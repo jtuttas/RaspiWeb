@@ -85,9 +85,10 @@ $(document).on('pagebeforeshow', '#page3', function () {
                 }
                 ax=Math.round(-(ax*5-50));
                 if ($('#gyro').is(":checked")) {
-                    console.log("Set Slider to:"+ax);
+                    //console.log("Set Slider to:"+ax);
                     $('#slider1').val(ax);
                      $('#slider1').slider('refresh');
+                    dimWebSocket.send(ax);
                 }
         }   
     }
