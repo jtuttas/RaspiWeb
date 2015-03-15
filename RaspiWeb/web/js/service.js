@@ -145,7 +145,7 @@ $(document).on('pagebeforeshow', '#page10', function () {
         data.addColumn('date', 'Last 24h');
         data.addColumn('number', "Temperature C");
         data.addColumn('number', "Pressure mBar");
-        var param = "?out=json&from=" + fromDate;
+        var param = "?out=json&from=" + fromDate+"&to"+toDay;
         console.log(param);
         $.ajax({url: "SensorServlet?out=json&from=" + fromDate + "&to=" + toDay, success: function (result) {
                 // demo = JSON.parse("{\"sensordata\" : [{\"temperature\" : 22.0,\"pressure\" : 17646,\"timestamp\" : \"2015-03-03 16:36:19.182\"}]}");
@@ -199,7 +199,8 @@ $(document).on('pagebeforeshow', '#page10', function () {
 function getYesterday() {
     var now = new Date();
     var yesterday = new Date(now.getTime() - 1000 * 60 * 60 * 24);
-    return "'" + yesterday.getFullYear() + "-" + (yesterday.getMonth() + 1) + "-" + (yesterday.getDay() + 1) + " " + yesterday.getHours() + ":" + yesterday.getMinutes() + ":" + yesterday.getSeconds() + "'";
+    console.log("yesterday="+yesterday);
+    return "'" + yesterday.getFullYear() + "-" + (yesterday.getMonth() + 1) + "-" + yesterday.getDate() + " " + yesterday.getHours() + ":" + yesterday.getMinutes() + ":" + yesterday.getSeconds() + "'";
 }
 
 /**
@@ -208,5 +209,6 @@ function getYesterday() {
  */
 function getToday() {
     var now = new Date();
-    return "'" + now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + (now.getDay() + 1) + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "'";
+    console.log("now="+now);
+    return "'" + now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "'";
 }
