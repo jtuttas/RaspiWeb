@@ -71,6 +71,27 @@ $(document).on('pagebeforeshow', '#page2', function () {
 $(document).on('pagebeforeshow', '#page3', function () {
 
     $('#slider1').slider('refresh');
+    if (window.DeviceMotionEvent == undefined) {
+        $("#gyro").attr("disabled", true);
+        console.log("kein DeviceMotionEvent");
+    }
+    else {
+        $("#gyro").attr("disabled", false);
+        console.log("mit DeviceMotionEvent");
+        window.ondevicemotion = function(event) {
+                ax = event.accelerationIncludingGravity.x
+                if (ax==null) {
+                    ax=-2;
+                }
+                ax=Math.round(-(ax*5-50));
+                if ($('#gyro').is(":checked")) {
+                    console.log("Set Slider to:"+ax);
+                    $('#slider1').val(ax);
+                     $('#slider1').slider('refresh');
+                }
+        }   
+    }
+
     $('#fieldslider1').change(function () {
         if (dimWebSocket != undefined) {
             dimWebSocket.send($('#slider1').val());
@@ -109,9 +130,9 @@ $(document).on('pagebeforeshow', '#page4', function () {
 
 });
 $(document).on('pagebeforeshow', '#page10', function () {
-    google.load("visualization", "1", {packages:["corechart"]});
+    google.load("visualization", "1", {packages: ["corechart"]});
     google.setOnLoadCallback(drawChart);
-    
+
 
     function drawChart() {
 
@@ -125,7 +146,7 @@ $(document).on('pagebeforeshow', '#page10', function () {
         data.addColumn('number', "Pressure mBar");
         var param = "?out=json&from=" + fromDate;
         console.log(param);
-        $.ajax({url: "SensorServlet?out=json&from=" + fromDate+"&to="+toDay, success: function (result) {
+        $.ajax({url: "SensorServlet?out=json&from=" + fromDate + "&to=" + toDay, success: function (result) {
                 // demo = JSON.parse("{\"sensordata\" : [{\"temperature\" : 22.0,\"pressure\" : 17646,\"timestamp\" : \"2015-03-03 16:36:19.182\"}]}");
                 console.log("receive data");
                 var rdata = new Array();
@@ -141,17 +162,15 @@ $(document).on('pagebeforeshow', '#page10', function () {
                 data.addRows(rdata);
                 var options = {
                     title: 'Temperature and Pressure with Raspberry PI and BMP180',
-                    
                     width: 900,
                     height: 500,
                     vAxes: {0: {},
-                            1: {}
+                        1: {}
                     },
                     series: {
                         0: {axis: 'Temps'},
                         1: {axis: 'Pressure'}
                     },
-                    
                     axes: {
                         // Adds labels to each axis; they don't have to match the axis names.
                         y: {
@@ -160,10 +179,10 @@ $(document).on('pagebeforeshow', '#page10', function () {
                         }
                     },
                     colors: ["red", "blue"]
-                    
+
                 };
-var chart =  new google.charts.Line(document.getElementById('chartdiv'));
-        chart.draw(data, options);
+                var chart = new google.charts.Line(document.getElementById('chartdiv'));
+                chart.draw(data, options);
 
             }});
 
