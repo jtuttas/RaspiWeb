@@ -41,6 +41,7 @@ public class LEDControl implements Runnable{
         // TODO ändern zum Testen
         gpio = GpioFactory.getInstance();
         opin = gpio.provisionDigitalOutputPin(pin, state);
+        //---------------------------------
         if (state==PinState.HIGH) this.dim(100);
         else this.dim(0);
         dimmer = new Thread(this);
