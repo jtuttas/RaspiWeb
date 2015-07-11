@@ -6,3 +6,22 @@ align:center;
 text-align:center;
 }
 
+.h1 {
+    align: center;
+    text-align: center;
+}
+
+#tempValue {
+align:center;
+text-align:center;
+    font-size: 40px;
+}
+
+body 
+{
+ background-color: #FFFFFF;
+ font-family: Tahoma, sans-serif;
+ font-size: 11px;
+}
+
+
