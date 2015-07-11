@@ -1,27 +1,25 @@
 .toggle {
-margin:0 auto;
-margin-left:auto;
-margin-right:auto;
-align:center;
-text-align:center;
+    margin:0 auto;
+    margin-left:auto;
+    margin-right:auto;
+    align:center;
+    text-align:center;
 }
 
-.h1 {
-    align: center;
-    text-align: center;
-}
 
 #tempValue {
-align:center;
-text-align:center;
-    font-size: 40px;
+    align:center;
+    text-align:center;
+    font-family: Tahoma, sans-serif;
+    font-size: 60px;
 }
 
-body 
-{
- background-color: #FFFFFF;
- font-family: Tahoma, sans-serif;
- font-size: 11px;
+
+#tempH1 {
+    align:center;
+    text-align:center;
+    font-family: Tahoma, sans-serif;
+    font-size: 30px;
 }
 
 
