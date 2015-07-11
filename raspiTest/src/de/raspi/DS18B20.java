@@ -16,21 +16,21 @@ import java.util.logging.Logger;
  *
  * @author Jörg
  */
-public class DS180 implements Runnable {
+public class DS18B20 implements Runnable {
 
     private String fileName;
     private BufferedReader reader;
     private Thread runner;
     private boolean running;
-    private DS180ValueChanged listener;
+    private DS18B20ValueChangedListener listener;
 
-    public DS180(String file) throws FileNotFoundException {
+    public DS18B20(String file) throws FileNotFoundException {
         fileName = file;
         
         runner = new Thread(this);
     }
 
-    public void setListener(DS180ValueChanged l) {
+    public void setListener(DS18B20ValueChangedListener l) {
         listener = l;
     }
 
@@ -66,14 +66,14 @@ public class DS180 implements Runnable {
 
     public static void main(String[] args) {
         try {
-            DS180 ds = new DS180("/sys/bus/w1/devices/28-000006369255/w1_slave");
+            DS18B20 ds = new DS18B20("/sys/bus/w1/devices/28-000006369255/w1_slave");
             System.out.println("Temperatur=" + ds.getTemperature());
             ds.close();
 
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(DS180.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DS18B20.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(DS180.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DS18B20.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -96,12 +96,12 @@ public class DS180 implements Runnable {
                
             } catch (IOException ex) {
                 System.err.println("IOException:"+ex.getMessage());
-                Logger.getLogger(DS180.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DS18B20.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(DS180.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DS18B20.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

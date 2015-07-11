@@ -9,7 +9,7 @@ package de.raspi;
  *
  * @author Jörg
  */
-public interface DS180ValueChanged {
+public interface DS18B20ValueChangedListener {
  
     public void valueChanged(double temp);
 }
