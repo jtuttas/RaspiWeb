@@ -5,8 +5,8 @@
  */
 package de.tuttas.raspi;
 
-import de.raspi.DS180;
-import de.raspi.DS180ValueChanged;
+import de.raspi.DS18B20;
+import de.raspi.DS18B20ValueChangedListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -22,10 +22,10 @@ import javax.websocket.server.ServerEndpoint;
  * @author Jörg
  */
 @ServerEndpoint("/ds180")
-public class DS180WSEndpoint implements DS180ValueChanged{
+public class DS180WSEndpoint implements DS18B20ValueChangedListener{
 
     Session session;
-    private DS180 ds180; 
+    private DS18B20 ds180; 
     
     @OnOpen
     public void onOpen(Session session) {
@@ -33,7 +33,7 @@ public class DS180WSEndpoint implements DS180ValueChanged{
         try {
             // TODO anpassen
             //ds180 = new DS180("c:\\\\Temp\\pi.txt");
-            ds180 = new DS180("/sys/bus/w1/devices/28-000006369255/w1_slave");
+            ds180 = new DS18B20("/sys/bus/w1/devices/28-000006369255/w1_slave");
             ds180.setListener(this);
             System.out.println("ds180 initialisiert");
             ds180.start();
