@@ -9,6 +9,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +25,8 @@ public class DS18B20 implements Runnable {
     private BufferedReader reader;
     private Thread runner;
     private boolean running;
-    private DS18B20ValueChangedListener listener;
+     // Listener
+    private ArrayList<DS18B20ValueChangedListener> listeners = new ArrayList<>();
 
     public DS18B20(String file) throws FileNotFoundException {
         fileName = file;
@@ -30,8 +34,12 @@ public class DS18B20 implements Runnable {
         runner = new Thread(this);
     }
 
-    public void setListener(DS18B20ValueChangedListener l) {
-        listener = l;
+    public void addListener(DS18B20ValueChangedListener l) {
+        listeners.add(l);
+    }
+    
+    public void removeListener(DS18B20ValueChangedListener l) {
+        listeners.remove(l);
     }
 
     public void start() {
@@ -66,7 +74,7 @@ public class DS18B20 implements Runnable {
 
     public static void main(String[] args) {
         try {
-            DS18B20 ds = new DS18B20("/sys/bus/w1/devices/28-000006369255/w1_slave");
+            DS18B20 ds = new DS18B20(Config.SensorAdr);
             System.out.println("Temperatur=" + ds.getTemperature());
             ds.close();
 
@@ -88,8 +96,8 @@ public class DS18B20 implements Runnable {
                 System.out.println("Read actual=" + aktualTemp);
 
                 if (aktualTemp != oldTemp) {
-                    if (listener != null) {
-                        listener.valueChanged(aktualTemp);
+                    for (DS18B20ValueChangedListener l:listeners) {
+                        l.valueChanged(aktualTemp);
                     }
                     oldTemp = aktualTemp;
                 }
@@ -103,6 +111,22 @@ public class DS18B20 implements Runnable {
             } catch (InterruptedException ex) {
                 Logger.getLogger(DS18B20.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+    }
+    
+    public String toJson(boolean last) {
+        try {
+            Timestamp timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
+            String out = "{";
+            out += "\"temperature\" : "+this.getTemperature()+",";
+            out += "\"pressure\" : "+"-1"+",";
+            out += "\"datetime\" : \""+timestamp.toString()+"\",";
+            out += "\"timestamp\" : "+timestamp.getTime()+"}";
+            if (!last) out+=",";
+            return out;
+        } catch (IOException ex) {
+            Logger.getLogger(DS18B20.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
     }
 }
