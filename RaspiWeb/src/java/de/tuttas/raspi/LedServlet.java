@@ -7,9 +7,7 @@
 
 package de.tuttas.raspi;
 
-import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.RaspiPin;
-import de.raspi.LEDControl;
+import de.raspi.LED;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -24,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 public class LedServlet extends HttpServlet {
 
     private String outFormat="plain";
-    LEDControl ledControl = LEDControl.getInstance(RaspiPin.GPIO_01, PinState.LOW);
+    LED ledControl = LED.getInstance(18, false);
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

@@ -5,9 +5,7 @@
  */
 package de.tuttas.raspi;
 
-import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.RaspiPin;
-import de.raspi.LEDControl;
+import de.raspi.LED;
 import de.raspi.LEDValueChanged;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -27,7 +25,7 @@ import javax.websocket.server.ServerEndpoint;
 public class LedWSEndpoint  implements LEDValueChanged{
 
     Session session;
-    LEDControl ledControl = LEDControl.getInstance(RaspiPin.GPIO_01, PinState.LOW);
+    LED ledControl = LED.getInstance(18, false);
     int oldDimValue = 0;
 
     @OnOpen

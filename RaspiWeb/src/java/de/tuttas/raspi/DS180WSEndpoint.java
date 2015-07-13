@@ -27,6 +27,8 @@ public class DS180WSEndpoint implements DS18B20ValueChangedListener{
     Session session;
     private DS18B20 ds180; 
     
+   
+    
     @OnOpen
     public void onOpen(Session session) {
         this.session=session;
@@ -34,7 +36,7 @@ public class DS180WSEndpoint implements DS18B20ValueChangedListener{
             // TODO anpassen
             //ds180 = new DS180("c:\\\\Temp\\pi.txt");
             ds180 = new DS18B20("/sys/bus/w1/devices/28-000006369255/w1_slave");
-            ds180.setListener(this);
+            ds180.addListener(this);
             System.out.println("ds180 initialisiert");
             ds180.start();
         } catch (FileNotFoundException ex) {
@@ -52,6 +54,7 @@ public class DS180WSEndpoint implements DS18B20ValueChangedListener{
              } catch (IOException ex) {
                  Logger.getLogger(DS180WSEndpoint.class.getName()).log(Level.SEVERE, null, ex);
              }
+             ds180.removeListener(this);
          }
      }
      

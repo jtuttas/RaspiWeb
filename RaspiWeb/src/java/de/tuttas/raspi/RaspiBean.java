@@ -2,9 +2,7 @@
 package de.tuttas.raspi;
 
 
-import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.RaspiPin;
-import de.raspi.LEDControl;
+import de.raspi.LED;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -20,7 +18,7 @@ public class RaspiBean {
     int ledState;
     int ledGlow;
     int temp;
-    LEDControl ledControl= LEDControl.getInstance(RaspiPin.GPIO_01, PinState.LOW);
+    LED ledControl= LED.getInstance(18, false);
 
     public void setLedState(int ledState) {
         System.out.println ("Set LED State="+ledState);

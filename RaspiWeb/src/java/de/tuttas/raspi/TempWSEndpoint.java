@@ -8,11 +8,12 @@ package de.tuttas.raspi;
 import de.raspi.BMP180;
 import de.raspi.BMP180Value;
 import de.raspi.BMP180ValueChangeListener;
+import de.raspi.DS18B20;
+import de.raspi.DS18B20ValueChangedListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.Init;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -24,29 +25,31 @@ import javax.websocket.server.ServerEndpoint;
  * @author Jörg
  */
 @ServerEndpoint("/temppoint")
-public class TempWSEndpoint implements BMP180ValueChangeListener {
+public class TempWSEndpoint implements DS18B20ValueChangedListener {
 
     Session session;
-    BMP180 bmp180 = BMP180.getInstance(1, 0x77);
-    BMP180Value lastValue;
+    DS18B20 sensor;
 
     
     
     @OnOpen
     public void onOpen(Session session) {
         this.session=session;
-        bmp180.addListener(this);
-        System.out.println("TempWSEndPoint " + session.getId() + " has opened a connection");
-        if (lastValue != null) {
-            send();
+        try {
+            sensor = new DS18B20("/sys/bus/w1/devices/28-000006369255/w1_slave");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(TempWSEndpoint.class.getName()).log(Level.SEVERE, null, ex);
         }
+        sensor.addListener(this);
+        System.out.println("TempWSEndPoint " + session.getId() + " has opened a connection");
+        send();
     }
 
     @OnClose
     public void onClose(Session session) {
         System.out.println("Session " + session.getId() + " has ended");
         this.session=null;
-        bmp180.removeListener(this);
+        sensor.removeListener(this);
     }
 
     @OnMessage
@@ -57,18 +60,15 @@ public class TempWSEndpoint implements BMP180ValueChangeListener {
 
     public void send() {
         try {
-            if (session != null) {
-                session.getBasicRemote().sendText(lastValue.toJson(true));
-                //System.out.println("Send " + lastValue.toJson(true));
-            }
+            session.getBasicRemote().sendText(sensor.toJson(true));
         } catch (IOException ex) {
             Logger.getLogger(TempWSEndpoint.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+
     @Override
-    public void valueChanged(BMP180Value v) {
-        lastValue = v;
+    public void valueChanged(double temp) {
         send();
     }
 }
