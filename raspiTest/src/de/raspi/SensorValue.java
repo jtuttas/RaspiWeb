@@ -13,25 +13,25 @@ import java.util.GregorianCalendar;
  *
  * @author Jörg
  */
-public class BMP180Value {
+public class SensorValue {
     
     private Timestamp timestamp ;
     private float temperature;
     private long pressure;
     
-    public BMP180Value(float temperature, long pressure) {
+    public SensorValue(float temperature, long pressure) {
         timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
         this.temperature=temperature;
         this.pressure=pressure;
     }
 
-    public BMP180Value(Timestamp time,float temp,long p) {
+    public SensorValue(Timestamp time,float temp,long p) {
         this.timestamp=time;
         this.temperature=temp;
         this.pressure=p;
     }
 
-    public boolean isLike(BMP180Value obj) {
+    public boolean isLike(SensorValue obj) {
         if (obj==null) return false;
         if (obj.getTemperature()==temperature && obj.getPressure()==pressure) return true;
         

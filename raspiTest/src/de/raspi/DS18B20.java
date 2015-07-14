@@ -21,7 +21,8 @@ import java.util.logging.Logger;
  */
 public class DS18B20 implements Runnable {
 
-    private String fileName;
+ private Timestamp timestamp ;
+ private String fileName;
     private BufferedReader reader;
     private Thread runner;
     private boolean running;
@@ -114,22 +115,72 @@ public class DS18B20 implements Runnable {
         }
     }
     
+
+    @Override
+    public String toString() {
+        timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
+     try {
+         return "Timestame: "+timestamp.toString()+"\nTemperature: "+this.getTemperature()+" C";
+     } catch (IOException ex) {
+         Logger.getLogger(DS18B20.class.getName()).log(Level.SEVERE, null, ex);
+          return "Timestame: "+timestamp.toString()+"\nTemperature: "+-1.0+" C";
+     }
+    }
+    public String toHtml() {
+        timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
+     try {
+         return "<div class=\"measurement\"><div class=\"timestamp\">Timestame: "+timestamp.toString()+"</div><div class=\"temperature\">Temperature: "+this.getTemperature()+" C</div></div>";
+     } catch (IOException ex) {
+ return "<div class=\"measurement\"><div class=\"timestamp\">Timestame: "+timestamp.toString()+"</div><div class=\"temperature\">Temperature: "+-1.0+" C</div></div>";     }
+    }
+    
+    public String toXml() {
+        timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
+        String out= "<measure timestamp=\""+timestamp.getTime()+"\" datetime=\""+timestamp.toString()+"\" >\n";
+     try {
+         out+="<temperature>"+this.getTemperature()+"</temperature>\n";
+     } catch (IOException ex) {
+         out+="<temperature>"+-1.0+"</temperature>\n";
+     }
+        out+="</measure>\n";
+        return out;
+    }
+    
     public String toJson(boolean last) {
-        try {
-            Timestamp timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
-            String out = "{";
-            out += "\"temperature\" : "+this.getTemperature()+",";
-            out += "\"pressure\" : "+"-1"+",";
-            out += "\"datetime\" : \""+timestamp.toString()+"\",";
+    timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
+        String out = "{";
+     try {
+         out += "\"temperature\" : "+this.getTemperature()+",";
+     } catch (IOException ex) {
+          out += "\"temperature\" : "+-1.0+",";
+     }
             out += "\"level0\" : "+Config.LEVEL0+",";
             out += "\"level1\" : "+Config.LEVEL1+",";
-            out += "\"datetime\" : \""+timestamp.toString()+"\",";
-            out += "\"timestamp\" : "+timestamp.getTime()+"}";
-            if (!last) out+=",";
-            return out;
-        } catch (IOException ex) {
-            Logger.getLogger(DS18B20.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
+        out += "\"datetime\" : \""+timestamp.toString()+"\",";
+        out += "\"timestamp\" : "+timestamp.getTime()+"}";
+        if (!last) out+=",";
+        return out;
     }
+    
+    public String toCsv() {
+        timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
+        String out;
+     try {
+         out = timestamp.getTime()+";\""+timestamp.toString()+"\";"+getTemperature()+";"+-1.0+"\n";
+     } catch (IOException ex) {
+         out = timestamp.getTime()+";\""+timestamp.toString()+"\";"+-1.0+";"+-1.0+"\n";
+     }
+        return out;
+    }
+
+    public SensorValue getValue() {
+     try {
+         return new SensorValue((float) this.getTemperature(), -1);
+     } catch (IOException ex) {
+          return new SensorValue((float) -1.0, -1);
+     }
+     }
+    
+    
+
 }

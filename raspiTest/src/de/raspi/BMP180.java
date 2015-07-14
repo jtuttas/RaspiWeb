@@ -41,7 +41,7 @@ public class BMP180 implements Runnable{
     // Sensor Data
     private float temperature=0;
     private long pressure=0;
-    private BMP180Value bmp180Value;
+    private SensorValue bmp180Value;
 
     // Listener
     private ArrayList<BMP180ValueChangeListener> listeners = new ArrayList<>();
@@ -82,13 +82,13 @@ public class BMP180 implements Runnable{
         return temperature;
     }
     
-    public BMP180Value getValue() {
+    public SensorValue getValue() {
         if (bmp180==null) {
             if (bmp180Value==null) {
-                bmp180Value= new BMP180Value(22, 10000);
+                bmp180Value= new SensorValue(22, 10000);
             }
             else {
-                bmp180Value=new BMP180Value(22, bmp180Value.getPressure()+1);
+                bmp180Value=new SensorValue(22, bmp180Value.getPressure()+1);
             }
         }
         return bmp180Value;
@@ -182,7 +182,7 @@ public class BMP180 implements Runnable{
             //System.out.println("Temperature: " + temperature + "C");
             
             pressure = calcPressture(UP);
-            bmp180Value = new BMP180Value(temperature, pressure);
+            bmp180Value = new SensorValue(temperature, pressure);
             //System.out.println("Pressure: " + pressure + "Pa");
         } catch (InterruptedException ex) {
             Logger.getLogger(BMP180.class.getName()).log(Level.SEVERE, null, ex);
@@ -260,7 +260,7 @@ public class BMP180 implements Runnable{
 
     @Override
     public void run() {
-        BMP180Value oldValue;
+        SensorValue oldValue;
         while (true) {
             try {
                 

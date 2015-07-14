@@ -47,11 +47,15 @@ public class DBlogger {
         return connection;
     }
     
-    public void log(BMP180Value bmp180Value) {
+    public void log(DS18B20 sensor) {
         Statement stmt = null;
         try {
             stmt = connection.createStatement();
-            if (bmp180Value!=null) stmt.execute("insert into "+TABLENAME+" (timestamp,temp,pressure) Values (now(),"+bmp180Value.getTemperature()+","+bmp180Value.getPressure()+")");
+            if (sensor!=null) try {
+                stmt.execute("insert into "+TABLENAME+" (timestamp,temp,pressure) Values (now(),"+sensor.getTemperature()+","+0+")");
+            } catch (IOException ex) {
+                Logger.getLogger(DBlogger.class.getName()).log(Level.SEVERE, null, ex);
+            }
             else stmt.execute("insert into "+TABLENAME+" (timestamp,temp,pressure) Values (now(),-1,0)");
         } catch (SQLException ex) {
             Logger.getLogger(DBlogger.class.getName()).log(Level.SEVERE, null, ex);
@@ -80,7 +84,6 @@ public class DBlogger {
             System.out.println ("No path to config.json added!");
         }
         else {
-            
             System.out.println ("read config.json: "+args[0]);
             try {
                 JSONParser parser = new JSONParser();
@@ -92,7 +95,7 @@ public class DBlogger {
                 Thread.sleep(2000);
                 System.out.println ("Temperatur:"+bmp180.getTemperature()+" C");
                 System.out.println ("Luftdruck:"+bmp180.getPressure()+" Pa");
-                dbl.log(bmp180.getValue());
+                //dbl.log(bmp180.getValue());
                 dbl.close();
             } catch (IOException ex) {
                 Logger.getLogger(DBlogger.class.getName()).log(Level.SEVERE, null, ex);

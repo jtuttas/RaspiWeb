@@ -10,5 +10,5 @@ package de.raspi;
  * @author Jörg
  */
 public interface BMP180ValueChangeListener {
-    public void valueChanged(BMP180Value v);
+    public void valueChanged(SensorValue v);
 }
