@@ -5,9 +5,7 @@
  */
 package de.tuttas.raspi;
 
-import de.raspi.BMP180;
-import de.raspi.BMP180Value;
-import de.raspi.BMP180ValueChangeListener;
+import de.raspi.Config;
 import de.raspi.DS18B20;
 import de.raspi.DS18B20ValueChangedListener;
 import java.io.FileNotFoundException;
@@ -36,11 +34,12 @@ public class TempWSEndpoint implements DS18B20ValueChangedListener {
     public void onOpen(Session session) {
         this.session=session;
         try {
-            sensor = new DS18B20("/sys/bus/w1/devices/28-000006369255/w1_slave");
+            sensor = new DS18B20(Config.SensorAdr);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(TempWSEndpoint.class.getName()).log(Level.SEVERE, null, ex);
         }
         sensor.addListener(this);
+        sensor.start();
         System.out.println("TempWSEndPoint " + session.getId() + " has opened a connection");
         send();
     }
@@ -50,6 +49,7 @@ public class TempWSEndpoint implements DS18B20ValueChangedListener {
         System.out.println("Session " + session.getId() + " has ended");
         this.session=null;
         sensor.removeListener(this);
+        sensor.stop();
     }
 
     @OnMessage
@@ -69,6 +69,7 @@ public class TempWSEndpoint implements DS18B20ValueChangedListener {
 
     @Override
     public void valueChanged(double temp) {
+        System.out.println("TempWSEndpoint: value Changed"+temp);
         send();
     }
 }

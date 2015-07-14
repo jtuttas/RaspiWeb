@@ -11,7 +11,7 @@ $(document).ready(function () {
 
         tempWebSocket = new WebSocket("ws://" + serveradress + "/temppoint");
         tempWebSocket.onmessage = function (event) {
-
+            console.log("Websocket receive:"+event.data);
             var jobj = jQuery.parseJSON(event.data);
             $('#h1temp').text("Temperatur " + jobj.temperature + " C");
             $('#tslider').val(jobj.temperature).slider('refresh');

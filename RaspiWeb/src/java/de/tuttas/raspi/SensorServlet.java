@@ -6,8 +6,10 @@
 package de.tuttas.raspi;
 
 import de.raspi.BMP180;
-import de.raspi.BMP180Value;
+import de.raspi.SensorValue;
+import de.raspi.Config;
 import de.raspi.DBlogger;
+import de.raspi.DS18B20;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -43,44 +45,48 @@ public class SensorServlet extends HttpServlet {
     private String errorMsg = null;
     private String outFormat = "plain";
     private DBlogger dblogger;
-    private ArrayList<BMP180Value> data;
-    private BMP180 bmp180;
+    private ArrayList<SensorValue> data;
+    private DS18B20 sensor;
 
     @Override
     public void init() throws ServletException {
-        super.init(); //To change body of generated methods, choose Tools | Templates.
-        bmp180 = BMP180.getInstance(1, 0x77);
-        Statement stmt = null;
         try {
-            JSONParser parser = new JSONParser();
-            ServletContext cntxt = this.getServletContext();
-            InputStream ins = cntxt.getResourceAsStream("/config.json");
-            String inString = "";
-            if (ins != null) {
-                InputStreamReader isr = new InputStreamReader(ins);
-                BufferedReader reader = new BufferedReader(isr);
-                int n = 0;
-                String word = "";
-                while ((word = reader.readLine()) != null) {
-                    inString += word;
+            super.init(); //To change body of generated methods, choose Tools | Templates.
+            sensor = new DS18B20(Config.SensorAdr);
+            Statement stmt = null;
+            try {
+                JSONParser parser = new JSONParser();
+                ServletContext cntxt = this.getServletContext();
+                InputStream ins = cntxt.getResourceAsStream("/config.json");
+                String inString = "";
+                if (ins != null) {
+                    InputStreamReader isr = new InputStreamReader(ins);
+                    BufferedReader reader = new BufferedReader(isr);
+                    int n = 0;
+                    String word = "";
+                    while ((word = reader.readLine()) != null) {
+                        inString += word;
+                    }
+                    Object obj = parser.parse(inString);
+                    JSONObject jsonObject = (JSONObject) obj;
+                    dblogger = new DBlogger(jsonObject.get("dbserver").toString(), jsonObject.get("dbname").toString(), jsonObject.get("dbuser").toString(), jsonObject.get("dbpassword").toString());
+                    System.out.println("Servlet connected to DB Server@" + jsonObject.get("dbserver").toString());
+                    errorMsg = null;
+                } else {
+                    errorMsg = "Failed to load config.json!";
                 }
-                Object obj = parser.parse(inString);
-                JSONObject jsonObject = (JSONObject) obj;
-                dblogger = new DBlogger(jsonObject.get("dbserver").toString(), jsonObject.get("dbname").toString(), jsonObject.get("dbuser").toString(), jsonObject.get("dbpassword").toString());
-                System.out.println("Servlet connected to DB Server@" + jsonObject.get("dbserver").toString());
-                errorMsg = null;
-            } else {
-                errorMsg = "Failed to load config.json!";
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(SensorServlet.class.getName()).log(Level.SEVERE, null, ex);
+                errorMsg = "Failed to load config.json";
+            } catch (IOException ex) {
+                Logger.getLogger(SensorServlet.class.getName()).log(Level.SEVERE, null, ex);
+                errorMsg = "Failed to load config.json";
+            } catch (ParseException ex) {
+                Logger.getLogger(SensorServlet.class.getName()).log(Level.SEVERE, null, ex);
+                errorMsg = "config.json not a correct json File";
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(SensorServlet.class.getName()).log(Level.SEVERE, null, ex);
-            errorMsg = "Failed to load config.json";
-        } catch (IOException ex) {
-            Logger.getLogger(SensorServlet.class.getName()).log(Level.SEVERE, null, ex);
-            errorMsg = "Failed to load config.json";
-        } catch (ParseException ex) {
-            Logger.getLogger(SensorServlet.class.getName()).log(Level.SEVERE, null, ex);
-            errorMsg = "config.json not a correct json File";
         }
     }
 
@@ -120,7 +126,7 @@ public class SensorServlet extends HttpServlet {
                     out.println("<link rel=\"stylesheet\" href=\"css/sensordata.css\" />");
                     out.println("</head><body>");
                 }
-                for (BMP180Value v : data) {
+                for (SensorValue v : data) {
                     if (outFormat.compareTo("plain") == 0) {
                         out.print(v.toString());
                     } else if (outFormat.compareTo("csv") == 0) {
@@ -159,7 +165,7 @@ public class SensorServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        data = new ArrayList<BMP180Value>();
+        data = new ArrayList<SensorValue>();
         String sqlFrom = "'" + new Timestamp(0).toString() + "'";
         String sqlTo = "'" + new Timestamp(GregorianCalendar.getInstance().getTimeInMillis()).toString() + "'";
         int last = -1;
@@ -182,7 +188,7 @@ public class SensorServlet extends HttpServlet {
         if (request.getParameter("from") == null
                 && request.getParameter("to") == null
                 && request.getParameter("last") == null) {
-            data.add(bmp180.getValue());
+            data.add(sensor.getValue());
         } else {
             //errorMsg = sql;
             Statement stmt = null;
@@ -190,7 +196,7 @@ public class SensorServlet extends HttpServlet {
                 stmt = dblogger.getConnection().createStatement();
                 ResultSet rs = stmt.executeQuery(sql);
                 while (rs.next()) {
-                    data.add(new BMP180Value(rs.getTimestamp("timestamp"), rs.getFloat("temp"), rs.getInt("pressure")));
+                    data.add(new SensorValue(rs.getTimestamp("timestamp"), rs.getFloat("temp"), rs.getInt("pressure")));
 
                 }
 
@@ -207,7 +213,7 @@ public class SensorServlet extends HttpServlet {
 
         if (request.getParameter("log") != null) {
             if (request.getParameterValues("log")[0].compareTo("true") == 0) {
-                dblogger.log(bmp180.getValue());
+                dblogger.log(sensor);
 
             }
         }
