@@ -2,7 +2,7 @@ body
 {
     font-family: Tahoma, sans-serif;
     font-size: 14px;
-    background: #d0e4f7; 
+    background: #ffffff; 
     margin: 0px;
     border: 0px;
 }
@@ -11,20 +11,36 @@ body
     align:center;
     text-align:center;
     font-family: Tahoma, sans-serif;
-    font-size: 60px;
+    font-size: 50px;
     margin-top: 30px;
     margin-left: 30px;
     margin-right: 30px;
-    padding-top: 50px;
-    padding-bottom: 50px;
-    background-color: #ff0000;
-    color: #ffffff;
-    border-bottom-left-radius: 50px;
-    border-bottom-right-radius: 50px;
-    border-top-left-radius: 50px;
-    border-top-right-radius: 50px;
+     margin-left: auto;
+    margin-right: auto;
+    padding-top: 140px;
+    padding-bottom: 140px;
+    color: #000000;
+    width: 340px;
+    border-bottom-left-radius: 200px;
+    border-bottom-right-radius: 200px;
+    border-top-left-radius: 200px;
+    border-top-right-radius: 200px;
 }
 
+.notConnected {
+    background-color: #aaaaaa;    
+}
+.below0 {
+    background-color: #00ff00;    
+}
+
+.below1 {
+    background-color: #FFff00;    
+}
+
+.above1 {
+    background-color: #FF0000;    
+}
 
 #tempH1 {
     align:center;

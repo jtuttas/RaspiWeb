@@ -5,6 +5,7 @@
  */
 package de.tuttas.raspi;
 
+import de.raspi.Config;
 import de.raspi.DS18B20;
 import de.raspi.DS18B20ValueChangedListener;
 import java.io.FileNotFoundException;
@@ -33,9 +34,7 @@ public class DS180WSEndpoint implements DS18B20ValueChangedListener{
     public void onOpen(Session session) {
         this.session=session;
         try {
-            // TODO anpassen
-            //ds180 = new DS180("c:\\\\Temp\\pi.txt");
-            ds180 = new DS18B20("/sys/bus/w1/devices/28-000006369255/w1_slave");
+            ds180 = new DS18B20(Config.SensorAdr);
             ds180.addListener(this);
             System.out.println("ds180 initialisiert");
             ds180.start();
@@ -62,7 +61,7 @@ public class DS180WSEndpoint implements DS18B20ValueChangedListener{
     public void valueChanged(double temp) {
         try {
             System.out.println("Value Changed:"+temp);
-            session.getBasicRemote().sendText(Double.toString(temp));
+            session.getBasicRemote().sendText(ds180.toJson(true));
         } catch (IOException ex) {
             Logger.getLogger(LedWSEndpoint.class.getName()).log(Level.SEVERE, null, ex);
         }

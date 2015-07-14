@@ -1,13 +1,23 @@
 var webSocket;
 
 $(document).ready(function () {
-    // TODO Adresse anpassen
-    //webSocket = new WebSocket("ws://localhost:8080/RaspiWeb/ds180");
-    webSocket = new WebSocket("ws://service.joerg-tuttas.de:8081/Raspi/ds180");
+    webSocket = new WebSocket("ws://"+serveradress+"/ds180");
     
     webSocket.onmessage = function (event) {
+        var sensordata = JSON.parse(event.data)
         console.log("Websocket receive data:"+event.data);
-        $("#tempValue").text(event.data+" °C");
+        $("#tempValue").text(sensordata.temperature+" C");
+        if (sensordata.temperature<sensordata.level0) {
+            $("#tempValue").attr("class","below0");
+        }
+        else if (sensordata.temperature<sensordata.level1) {
+            $("#tempValue").attr("class","below1");
+            
+        }
+        else {
+            $("#tempValue").attr("class","above1");
+
+        }
     };
 });
 
