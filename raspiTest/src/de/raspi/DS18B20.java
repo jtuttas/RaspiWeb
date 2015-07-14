@@ -121,6 +121,9 @@ public class DS18B20 implements Runnable {
             out += "\"temperature\" : "+this.getTemperature()+",";
             out += "\"pressure\" : "+"-1"+",";
             out += "\"datetime\" : \""+timestamp.toString()+"\",";
+            out += "\"level0\" : "+Config.LEVEL0+",";
+            out += "\"level1\" : "+Config.LEVEL1+",";
+            out += "\"datetime\" : \""+timestamp.toString()+"\",";
             out += "\"timestamp\" : "+timestamp.getTime()+"}";
             if (!last) out+=",";
             return out;
