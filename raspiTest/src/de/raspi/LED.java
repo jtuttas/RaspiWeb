@@ -21,7 +21,7 @@ public class LED implements Runnable {
     private long onTime = 0;
     private Thread dimmer;
     private boolean running = false;
-    private static LED instance;
+    private static LED[] instances = new LED[28];
     private int dimValue;
     private ArrayList<LEDValueChanged> listeners = new ArrayList<>();
     private int pin;
@@ -35,11 +35,11 @@ public class LED implements Runnable {
     }
 
     public static LED getInstance(int pin, boolean state) {
-        if (instance == null) {
-            instance = new LED(pin);
+        if (instances[pin] == null) {
+            instances[pin] = new LED(pin);
         }
-        instance.turnOn(state);
-        return instance;
+        instances[pin].turnOn(state);
+        return instances[pin];
     }
 
     public void turnOn(boolean b) {
@@ -104,6 +104,12 @@ public class LED implements Runnable {
         }
     }
 
+    @Override
+    public String toString() {
+        return "LED PIN="+pin+" dim Value="+this.getDimValue();
+    }
+
+    
     public int getDimValue() {
         return dimValue;
     }

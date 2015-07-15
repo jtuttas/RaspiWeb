@@ -44,8 +44,10 @@ public class DS18B20 implements Runnable {
     }
 
     public void start() {
-        running = true;
-        runner.start();
+        if (running==false) {
+            running = true;
+            runner.start();
+        }
     }
 
     public void stop() {
