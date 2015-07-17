@@ -29,7 +29,7 @@ public class DS18B20 implements Runnable {
      // Listener
     private ArrayList<DS18B20ValueChangedListener> listeners = new ArrayList<>();
 
-    public DS18B20(String file) throws FileNotFoundException {
+    public DS18B20(String file) {
         fileName = file;
         
         runner = new Thread(this);
@@ -118,36 +118,8 @@ public class DS18B20 implements Runnable {
     }
     
 
-    @Override
-    public String toString() {
-        timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
-     try {
-         return "Timestame: "+timestamp.toString()+"\nTemperature: "+this.getTemperature()+" C";
-     } catch (IOException ex) {
-         Logger.getLogger(DS18B20.class.getName()).log(Level.SEVERE, null, ex);
-          return "Timestame: "+timestamp.toString()+"\nTemperature: "+-1.0+" C";
-     }
-    }
-    public String toHtml() {
-        timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
-     try {
-         return "<div class=\"measurement\"><div class=\"timestamp\">Timestame: "+timestamp.toString()+"</div><div class=\"temperature\">Temperature: "+this.getTemperature()+" C</div></div>";
-     } catch (IOException ex) {
- return "<div class=\"measurement\"><div class=\"timestamp\">Timestame: "+timestamp.toString()+"</div><div class=\"temperature\">Temperature: "+-1.0+" C</div></div>";     }
-    }
-    
-    public String toXml() {
-        timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
-        String out= "<measure timestamp=\""+timestamp.getTime()+"\" datetime=\""+timestamp.toString()+"\" >\n";
-     try {
-         out+="<temperature>"+this.getTemperature()+"</temperature>\n";
-     } catch (IOException ex) {
-         out+="<temperature>"+-1.0+"</temperature>\n";
-     }
-        out+="</measure>\n";
-        return out;
-    }
-    
+   
+   
     public String toJson(boolean last) {
     timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
         String out = "{";
@@ -164,17 +136,7 @@ public class DS18B20 implements Runnable {
         return out;
     }
     
-    public String toCsv() {
-        timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
-        String out;
-     try {
-         out = timestamp.getTime()+";\""+timestamp.toString()+"\";"+getTemperature()+";"+-1.0+"\n";
-     } catch (IOException ex) {
-         out = timestamp.getTime()+";\""+timestamp.toString()+"\";"+-1.0+";"+-1.0+"\n";
-     }
-        return out;
-    }
-
+   
     public SensorValue getValue() {
      try {
          return new SensorValue((float) this.getTemperature(), -1);
