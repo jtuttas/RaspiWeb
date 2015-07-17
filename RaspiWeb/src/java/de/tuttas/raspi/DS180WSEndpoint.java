@@ -32,14 +32,10 @@ public class DS180WSEndpoint implements DS18B20ValueChangedListener{
     @OnOpen
     public void onOpen(Session session) {
         this.session=session;
-        try {
-            ds180 = new DS18B20(Config.SensorAdr);
-            ds180.addListener(this);
-            System.out.println("ds180 initialisiert");
-            ds180.start();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(DS180WSEndpoint.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        ds180 = new DS18B20(Config.SensorAdr);
+        ds180.addListener(this);
+        System.out.println("ds180 initialisiert");
+        ds180.start();
         System.out.println(session.getId() + " has opened a connection");
     }
 

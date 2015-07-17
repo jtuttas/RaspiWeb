@@ -33,11 +33,7 @@ public class TempWSEndpoint implements DS18B20ValueChangedListener {
     @OnOpen
     public void onOpen(Session session) {
         this.session=session;
-        try {
-            sensor = new DS18B20(Config.SensorAdr);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(TempWSEndpoint.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        sensor = new DS18B20(Config.SensorAdr);
         sensor.addListener(this);
         sensor.start();
         System.out.println("TempWSEndPoint " + session.getId() + " has opened a connection");

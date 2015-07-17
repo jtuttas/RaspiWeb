@@ -50,7 +50,6 @@ public class SensorServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        try {
             super.init(); //To change body of generated methods, choose Tools | Templates.
             sensor = new DS18B20(Config.SensorAdr);
             Statement stmt = null;
@@ -85,9 +84,6 @@ public class SensorServlet extends HttpServlet {
                 Logger.getLogger(SensorServlet.class.getName()).log(Level.SEVERE, null, ex);
                 errorMsg = "config.json not a correct json File";
             }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(SensorServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     /**
