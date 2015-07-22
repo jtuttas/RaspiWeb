@@ -110,7 +110,7 @@ public class DS18B20 implements Runnable {
                 Logger.getLogger(DS18B20.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                Thread.sleep(10000);
+                Thread.sleep((2000));
             } catch (InterruptedException ex) {
                 Logger.getLogger(DS18B20.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -10,8 +10,8 @@ package de.raspi;
  * @author Jörg
  */
 public class Config {
-    public static final double LEVEL0=22.0;
-    public static final double LEVEL1=24.0;
+    public static final double LEVEL0=28.0;
+    public static final double LEVEL1=29.0;
     // TODO Config ändern
     // Raspbery PI Config
     
