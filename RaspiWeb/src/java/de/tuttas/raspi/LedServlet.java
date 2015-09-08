@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 public class LedServlet extends HttpServlet {
 
     private String outFormat="plain";
-    LED ledControl = LED.getInstance(18, false);
+    LED ledControl = LED.getInstance(18);
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

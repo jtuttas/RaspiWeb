@@ -18,7 +18,7 @@ public class RaspiBean {
     int ledState;
     int ledGlow;
     int temp;
-    LED ledControl= LED.getInstance(18, false);
+    LED ledControl= LED.getInstance(18);
 
     public void setLedState(int ledState) {
         System.out.println ("Set LED State="+ledState);

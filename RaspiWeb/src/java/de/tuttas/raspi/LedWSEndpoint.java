@@ -25,7 +25,7 @@ import javax.websocket.server.ServerEndpoint;
 public class LedWSEndpoint  implements LEDValueChanged{
 
     Session session;
-    LED ledControl = LED.getInstance(18, false);
+    LED ledControl = LED.getInstance(18);
     int oldDimValue = 0;
 
     @OnOpen
@@ -52,7 +52,7 @@ public class LedWSEndpoint  implements LEDValueChanged{
 
     private void sendDimValue() {
         try {
-            session.getBasicRemote().sendText(Integer.toString(ledControl.getDimValue()));
+            session.getBasicRemote().sendText(ledControl.getDimValue().toString());
         } catch (IOException ex) {
             Logger.getLogger(LedWSEndpoint.class.getName()).log(Level.SEVERE, null, ex);
         }
