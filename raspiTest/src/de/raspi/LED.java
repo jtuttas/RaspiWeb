@@ -22,26 +22,28 @@ public class LED implements Runnable {
     private Thread dimmer;
     private boolean running = false;
     private static LED[] instances = new LED[28];
-    private int dimValue;
+    private LEDDimValue dimValue;
     private ArrayList<LEDValueChanged> listeners = new ArrayList<>();
     private int pin;
     
     private LED(int pin) {
         this.pin=pin;
-        init(pin);
+        dimValue=new LEDDimValue();
+        init(pin);        
         dimmer = new Thread(this);
         running = true;
         dimmer.start();
     }
 
-    public static LED getInstance(int pin, boolean state) {
+    public static LED getInstance(int pin) {
         if (instances[pin] == null) {
             instances[pin] = new LED(pin);
         }
-        instances[pin].turnOn(state);
         return instances[pin];
     }
 
+    
+    
     public void turnOn(boolean b) {
         if (b) {
             this.dim(100);
@@ -57,7 +59,7 @@ public class LED implements Runnable {
     }
 
     public void dim(int i) {
-        dimValue = i;
+        dimValue.setDim(i);
         onTime = 20 * i / 100;
         System.out.println("Dimmer set to " + i + "% onTime is " + onTime + " ms");
         for (LEDValueChanged l : listeners) {
@@ -91,14 +93,14 @@ public class LED implements Runnable {
                 try {
                     Thread.sleep(onTime);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(LEDControl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(LED.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             setOn(false);
             try {
                 Thread.sleep(20 - onTime);
             } catch (InterruptedException ex) {
-                Logger.getLogger(LEDControl.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(LED.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -110,7 +112,7 @@ public class LED implements Runnable {
     }
 
     
-    public int getDimValue() {
+    public LEDDimValue getDimValue() {
         return dimValue;
     }
 
@@ -147,9 +149,10 @@ public class LED implements Runnable {
     
     public static void main(String[] args) {
         try {
-            LED l = LED.getInstance(18, true);
+            LED l = LED.getInstance(18);
             
             System.out.println("LED shoud be on");
+            l.dim(100);
             Thread.sleep(10000);
             l.dim(0);
             System.out.println("LED shoud be off");
@@ -157,6 +160,7 @@ public class LED implements Runnable {
             l.dim(50);
             System.out.println("LED shoud be 50%");
             Thread.sleep(5000);
+            l.dim(100);
             System.out.println("LED shoud be on");
             Thread.sleep(10000);
             l.shutDown();

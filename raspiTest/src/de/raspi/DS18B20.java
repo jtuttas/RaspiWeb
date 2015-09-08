@@ -54,7 +54,7 @@ public class DS18B20 implements Runnable {
         running = false;
     }
 
-    public double getTemperature() throws IOException {
+    public DS18B20Value getTemperature() throws IOException {
         reader = new BufferedReader(new FileReader(fileName));
         String zeile = reader.readLine();
         double out = 0.0;
@@ -67,7 +67,7 @@ public class DS18B20 implements Runnable {
 
         }
         reader.close();
-        return out;
+        return new DS18B20Value(out);
 
     }
 
@@ -95,7 +95,7 @@ public class DS18B20 implements Runnable {
         double aktualTemp = 0.0;
         while (running) {
             try {
-                aktualTemp = this.getTemperature();
+                aktualTemp = this.getTemperature().getTemperature();
                 System.out.println("Read actual=" + aktualTemp);
 
                 if (aktualTemp != oldTemp) {
@@ -124,7 +124,7 @@ public class DS18B20 implements Runnable {
     timestamp = new Timestamp(GregorianCalendar.getInstance().getTime().getTime());
         String out = "{";
      try {
-         out += "\"temperature\" : "+this.getTemperature()+",";
+         out += "\"temperature\" : "+this.getTemperature().getTemperature()+",";
      } catch (IOException ex) {
           out += "\"temperature\" : "+-1.0+",";
      }
@@ -139,7 +139,7 @@ public class DS18B20 implements Runnable {
    
     public SensorValue getValue() {
      try {
-         return new SensorValue((float) this.getTemperature(), -1);
+         return new SensorValue((float) this.getTemperature().getTemperature(), -1);
      } catch (IOException ex) {
           return new SensorValue((float) -1.0, -1);
      }

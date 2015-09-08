@@ -19,9 +19,9 @@ public class Controller implements DS18B20ValueChangedListener{
     DS18B20 sensor;
     
     public Controller() throws FileNotFoundException {
-        red=LED.getInstance(23, false);
-        green=LED.getInstance(24, false);
-        blue=LED.getInstance(25, false);
+        red=LED.getInstance(23);
+        green=LED.getInstance(24);
+        blue=LED.getInstance(25);
         sensor = new DS18B20(Config.SensorAdr);
         sensor.addListener(this);
         sensor.start();
