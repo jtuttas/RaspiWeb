@@ -3,6 +3,7 @@ package de.tuttas.raspi;
 
 
 import de.raspi.LED;
+import javax.ejb.Stateful;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -11,7 +12,7 @@ import javax.faces.bean.SessionScoped;
  * @author Jörg
  */
 @ManagedBean
-@SessionScoped
+@Stateful
 public class RaspiBean {
 
     
