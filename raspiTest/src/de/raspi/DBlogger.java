@@ -52,7 +52,7 @@ public class DBlogger {
         try {
             stmt = connection.createStatement();
             if (sensor!=null) try {
-                stmt.execute("insert into "+TABLENAME+" (timestamp,temp,pressure) Values (now(),"+sensor.getTemperature()+","+0+")");
+                stmt.execute("insert into "+TABLENAME+" (timestamp,temp,pressure) Values (now(),"+sensor.getTemperature().getTemperature()+","+0+")");
             } catch (IOException ex) {
                 Logger.getLogger(DBlogger.class.getName()).log(Level.SEVERE, null, ex);
             }
