@@ -6,7 +6,7 @@ $(document).ready(function () {
     webSocket.onmessage = function (event) {
         var sensordata = JSON.parse(event.data)
         console.log("Websocket receive data:"+event.data);
-        $("#tempValue").text(sensordata.temperature+" °C");
+        $("#tempValue").text(sensordata.temperature+" C");
         if (sensordata.temperature<sensordata.level0) {
             $("#tempValue").attr("class","below0 margin-base-vertical text-center");
         }
