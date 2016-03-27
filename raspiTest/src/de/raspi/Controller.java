@@ -5,10 +5,19 @@
  */
 package de.raspi;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.simple.JSONObject;
+
 
 /**
  *
@@ -17,6 +26,7 @@ import java.util.logging.Logger;
 public class Controller implements DS18B20ValueChangedListener{
     LED red,green,blue;
     DS18B20 sensor;
+    double lastValue;
     
     public Controller() throws FileNotFoundException {
         red=LED.getInstance(23);
@@ -50,6 +60,14 @@ public class Controller implements DS18B20ValueChangedListener{
             red.dim(100);
             blue.dim(0);            
         }
+        try {
+            if (Math.abs(temp-lastValue)>=0.5) {
+                postRequest(temp);
+                lastValue=temp;
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public static void main(String[] args) {
@@ -70,5 +88,38 @@ public class Controller implements DS18B20ValueChangedListener{
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.exit(0);
+    }
+
+    private void postRequest(double temp) throws MalformedURLException {
+        
+        try {
+            String url = "http://maker.ifttt.com/trigger/TemperatureChanged/with/key/W4JUGEGMsLuY9wdYZg80Y?value1="+Double.toString(temp);
+            
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            
+            // optional default is GET
+            con.setRequestMethod("GET");
+                      
+            int responseCode = con.getResponseCode();
+            System.out.println("\nSending 'GET' request to URL : " + url);
+            System.out.println("Response Code : " + responseCode);
+            
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            
+            //print result
+            System.out.println(response.toString());
+        } catch (IOException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
     }
 }
