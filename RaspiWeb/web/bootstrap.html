@@ -28,7 +28,7 @@
                     <h1 id="tempValue" class="margin-base-vertical text-center">... C</h1>
                     <p class="help-block text-center"><iframe width="330" height="250" src="http://service.joerg-tuttas.de:8181"></iframe></p>
                     <form class="margin-base-vertical">
-                        <p class="help-block text-center"><small>LED Control</small></p>
+                        <p class="help-block text-center"><small>LED Control (<span id="dimValue">0</span>%)</small></p>
                         <p class="text-center">
                             <button type="button" id="dim0" class="btn btn-success btn-large">Dim 0%</button>
                             <button type="button" id="dim33" class="btn btn-primary btn-large">Dim 33%</button>
@@ -36,6 +36,14 @@
                             <button type="button" id="dim100" class="btn btn-danger btn-large">Dim 100%</button>
                         </p>
                     </form>
+                    <p class="help-block text-center"><small>Step Motor Control (<span id="stepperValue">0</span> °)</small></p>
+                        <p class="text-center">
+                            <button type="button" id="left90" class="btn btn-warning btn-large">Left 90°</button>
+                            <button type="button" id="left45" class="btn btn-primary btn-large">Left 45°</button>
+                            <button type="button" id="reset" class="btn btn-danger btn-large">Reset</button>
+                            <button type="button" id="right45" class="btn btn-primary btn-large">Right 45°</button>
+                            <button type="button" id="right90" class="btn btn-warning btn-large">Right 90°</button>
+                        </p>
                     <div class="margin-base-vertical">
                         <small class="text-muted"><a href="https://github.com/jtuttas/RaspiWeb">review the Code on GitHub</a>.</small>
                     </div>
@@ -49,6 +57,8 @@
         <script src="js/bootstrap.min.js"></script>
         <script src="js/config.js"></script>
         <script src="js/ds180.js"></script>
+        <script src="js/dimLed.js"></script>
+        <script src="js/stepper.js"></script>
         <script src="js/restControl.js"></script>
     </body>
 </html>
