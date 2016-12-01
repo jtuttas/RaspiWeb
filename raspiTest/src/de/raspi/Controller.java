@@ -61,7 +61,7 @@ public class Controller implements DS18B20ValueChangedListener{
             blue.dim(0);            
         }
         try {
-            if (Math.abs(temp-lastValue)>=0.5) {
+            if (Math.abs(temp-lastValue)>=0.5 && temp!=0.0) {
                 postRequest(temp);
                 lastValue=temp;
             }
