@@ -8,7 +8,10 @@ package de.tuttas.raspi.restful;
 import de.raspi.LED;
 import de.raspi.LEDDimValue;
 import de.raspi.Stepper;
+import de.raspi.StepperMovingException;
 import de.raspi.StepperPosition;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -29,10 +32,18 @@ public class RestfulStepper {
      @Consumes(MediaType.APPLICATION_JSON)
      public StepperPosition setStepperValue(StepperValue d) {
          if (d.getDir().equals("left")) {
-             stepperControl.left(d.getStep(), 20);
+             try {
+                 stepperControl.left(d.getStep(), 20);
+             } catch (StepperMovingException ex) {
+                 Logger.getLogger(RestfulStepper.class.getName()).log(Level.SEVERE, null, ex);
+             }
          }
          else if (d.getDir().equals("right")) {
-             stepperControl.right(d.getStep(), 20);             
+             try {             
+                 stepperControl.right(d.getStep(), 20);
+             } catch (StepperMovingException ex) {
+                 Logger.getLogger(RestfulStepper.class.getName()).log(Level.SEVERE, null, ex);
+             }
          }
          return stepperControl.getPostion();
      }
@@ -44,6 +55,10 @@ public class RestfulStepper {
      
      @DELETE
      public void resetStepperPosition() {
-         stepperControl.reset();
+         try {
+             stepperControl.reset();
+         } catch (StepperMovingException ex) {
+             Logger.getLogger(RestfulStepper.class.getName()).log(Level.SEVERE, null, ex);
+         }
      }
 }
