@@ -98,7 +98,7 @@ public class DS18B20 implements Runnable {
                 aktualTemp = this.getTemperature().getTemperature();
                 System.out.println("Read actual=" + aktualTemp);
 
-                if (aktualTemp != oldTemp) {
+                if (aktualTemp != oldTemp && aktualTemp!=0.0) {
                     for (DS18B20ValueChangedListener l:listeners) {
                         l.valueChanged(aktualTemp);
                     }

@@ -17,7 +17,8 @@ import javax.swing.text.Position;
 public class Stepper {
 
     private static Stepper instance;
-
+    private  boolean moving;
+    
     LED out1;
     LED out2;
     LED out3;
@@ -38,6 +39,7 @@ public class Stepper {
         out4 = led4;
         position = new StepperPosition();
         stepIndex = 0;
+        moving=false;
     }
 
     public void addListener(StepperPositionChangedListener l) {
@@ -64,14 +66,23 @@ public class Stepper {
 
     }
 
-    public void left(int steps, long delay) {
+    public boolean isMoving() {
+        return moving;
+    }
+    
+    public void left(int steps, long delay) throws StepperMovingException {
+        
+        if (moving) {
+            throw new StepperMovingException(this, "Stepper is moving");
+        }
+        moving=true;
         for (StepperPositionChangedListener l : listeners) {
             l.moving(true);
         }
         for (int i = 0; i < steps; i++) {
             try {
                 left();
-            } catch (StepperExeption ex) {
+            } catch (StepperPositionException ex) {
                 Logger.getLogger(Stepper.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
@@ -81,13 +92,14 @@ public class Stepper {
             }
         }
         this.clear();
+        moving=false;
         for (StepperPositionChangedListener l : listeners) {
             l.positionChanged(position);
             l.moving(false);
         }
     }
 
-    private void left() throws StepperExeption {
+    private void left() throws StepperPositionException {
         stepIndex--;
         if (stepIndex < 0) {
             stepIndex = 7;
@@ -96,7 +108,11 @@ public class Stepper {
         position.left();
     }
 
-    public void right(int steps, long delay) {
+    public void right(int steps, long delay) throws StepperMovingException {
+        if (moving) {
+            throw new StepperMovingException(this, "Stepper is moving");
+        }
+        moving=true;
         for (StepperPositionChangedListener l : listeners) {
             l.moving(true);
         }
@@ -104,7 +120,7 @@ public class Stepper {
         for (int i = 0; i < steps; i++) {
             try {
                 right();
-            } catch (StepperExeption ex) {
+            } catch (StepperPositionException ex) {
                 Logger.getLogger(Stepper.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
@@ -113,6 +129,7 @@ public class Stepper {
                 Logger.getLogger(Stepper.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        moving=false;
         this.clear();
         for (StepperPositionChangedListener l : listeners) {
             l.positionChanged(position);
@@ -120,7 +137,12 @@ public class Stepper {
         }
     }
 
-    public void reset() {
+    public void reset() throws StepperMovingException {
+        if (moving) {
+            throw new StepperMovingException(this, "Stepper is moving");
+        }
+        moving=true;
+
         for (StepperPositionChangedListener l : listeners) {
             l.moving(true);
         }
@@ -135,8 +157,9 @@ public class Stepper {
                         Logger.getLogger(Stepper.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            } catch (StepperExeption ex) {
+            } catch (StepperPositionException ex) {
                 Logger.getLogger(Stepper.class.getName()).log(Level.SEVERE, null, ex);
+                position.resetPosition();
             }
 
         } else {
@@ -149,10 +172,12 @@ public class Stepper {
                         Logger.getLogger(Stepper.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            } catch (StepperExeption ex) {
+            } catch (StepperPositionException ex) {
                 Logger.getLogger(Stepper.class.getName()).log(Level.SEVERE, null, ex);
+                position.resetPosition();
             }
         }
+        moving=false;
         this.clear();
         for (StepperPositionChangedListener l : listeners) {
             l.positionChanged(position);
@@ -160,7 +185,7 @@ public class Stepper {
         }
     }
 
-    private void right() throws StepperExeption {
+    private void right() throws StepperPositionException {
         stepIndex++;
         if (stepIndex > 7) {
             stepIndex = 0;
@@ -188,7 +213,7 @@ public class Stepper {
 
         System.out.println("3=" + out3.getDimValue());
     }
-
+    /*
     public static void main(String[] args) {
         Stepper s = Stepper.getInstance(LED.getInstance(12), LED.getInstance(16), LED.getInstance(13), LED.getInstance(21));
         System.out.println("Eine Umdrehung rechts");
@@ -206,5 +231,5 @@ public class Stepper {
         s.clear();
 
     }
-
+    */
 }

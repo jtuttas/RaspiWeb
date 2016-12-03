@@ -9,10 +9,10 @@ package de.raspi;
  *
  * @author Jörg
  */
-public class StepperExeption extends Exception{
+public class StepperPositionException extends Exception{
 
-    public StepperExeption(String s) {
-        super(s);
+    public StepperPositionException(String msg) {
+        super(msg);
     }
     
     

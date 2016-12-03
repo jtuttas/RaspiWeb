@@ -23,23 +23,32 @@ public class StepperPosition {
     public double getPosition() {
         return position;
     }
+
+    public void setPosition(double position) {
+        this.position = position;
+    }
     
-    public void left() throws StepperExeption {
+    
+    public void resetPosition() {
+        position=0.0;
+    }
+    
+    public void left() throws StepperPositionException {
         position=position-0.0879;
         position=Math.round(position*10000.0)/10000.0;
         if (position<0) {
             position=360+position;
-            throw new StepperExeption("Zero Degrees Exceeded!");
+            throw new StepperPositionException("Zero Degrees Exceeded!");
         }
     }
     
-    public void right() throws StepperExeption {
+    public void right() throws StepperPositionException {
         position=position+0.0879;
         position=Math.round(position*10000.0)/10000.0;
         if (position>=360) {
             position=position%360;
             
-            throw new StepperExeption("Zero Degrees Exceeded!");
+            throw new StepperPositionException("Zero Degrees Exceeded!");
         }
     }
 
